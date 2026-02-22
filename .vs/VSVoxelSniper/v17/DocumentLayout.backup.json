@@ -3,24 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\vsvoxelsnipercommands.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\vsvoxelsnipercommands.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\vsvoxelsnipermodsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\vsvoxelsnipermodsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\shapes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\shapes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\serversideuserworkspace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\serversideuserworkspace.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\brushes\\treegen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\brushes\\treegen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\vsvoxelsnipermodsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\vsvoxelsnipermodsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\shapes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\shapes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\vsvoxelsnipercommands.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\vsvoxelsnipercommands.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\brushes\\treegen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|solutionrelative:vsvoxelsniper\\vsvoxelsniper\\src\\brushes\\treegen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E1136523-6434-448B-A250-240A19F38B3F}|VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper.csproj|c:\\users\\xof\\documents\\vsmod\\vsvoxelsniper\\vsvoxelsniper\\vsvoxelsniper\\src\\sniperdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -46,24 +46,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "Shapes.cs",
               "DocumentMoniker": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\Shapes.cs",
               "RelativeDocumentMoniker": "VSVoxelSniper\\VSVoxelSniper\\src\\Shapes.cs",
               "ToolTip": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\Shapes.cs",
               "RelativeToolTip": "VSVoxelSniper\\VSVoxelSniper\\src\\Shapes.cs",
-              "ViewState": "AgIAAJsAAAAAAAAAAAAawB4BAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAJwAAAAAAAAAAAA2wMIAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-18T03:52:07.706Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "TreeGen.cs",
               "DocumentMoniker": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\Brushes\\TreeGen.cs",
               "RelativeDocumentMoniker": "VSVoxelSniper\\VSVoxelSniper\\src\\Brushes\\TreeGen.cs",
@@ -84,8 +84,7 @@
               "RelativeToolTip": "VSVoxelSniper\\VSVoxelSniper\\src\\Brushes\\Splatter.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-16T19:04:17.68Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-16T19:04:17.68Z"
             },
             {
               "$type": "Document",
@@ -97,8 +96,7 @@
               "RelativeToolTip": "VSVoxelSniper\\VSVoxelSniper\\src\\Brushes\\CloneStamp.cs",
               "ViewState": "AgIAADQAAAAAAAAAAAAlwF4AAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-19T02:42:14.786Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-19T02:42:14.786Z"
             },
             {
               "$type": "Document",
@@ -110,44 +108,43 @@
               "RelativeToolTip": "VSVoxelSniper\\VSVoxelSniper\\modinfo.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-09T03:49:26.16Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T03:49:26.16Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "ServerSideUserWorkspace.cs",
               "DocumentMoniker": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\ServerSideUserWorkspace.cs",
               "RelativeDocumentMoniker": "VSVoxelSniper\\VSVoxelSniper\\src\\ServerSideUserWorkspace.cs",
               "ToolTip": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\ServerSideUserWorkspace.cs",
               "RelativeToolTip": "VSVoxelSniper\\VSVoxelSniper\\src\\ServerSideUserWorkspace.cs",
-              "ViewState": "AgIAAGYAAAAAAAAAAAAtwH8AAAA8AAAAAAAAAA==",
+              "ViewState": "AgIAAI0AAAAAAAAAAAAtwLYAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-04T03:54:43.191Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "VSVoxelSniperCommands.cs",
               "DocumentMoniker": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\VSVoxelSniperCommands.cs",
               "RelativeDocumentMoniker": "VSVoxelSniper\\VSVoxelSniper\\src\\VSVoxelSniperCommands.cs",
               "ToolTip": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\VSVoxelSniperCommands.cs",
               "RelativeToolTip": "VSVoxelSniper\\VSVoxelSniper\\src\\VSVoxelSniperCommands.cs",
-              "ViewState": "AgIAAOEBAAAAAAAAAAAtwPEBAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAAIwCAAAAAAAAAAAtwK4CAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-04T03:57:39.936Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "VSVoxelSniperModSystem.cs",
               "DocumentMoniker": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\VSVoxelSniperModSystem.cs",
               "RelativeDocumentMoniker": "VSVoxelSniper\\VSVoxelSniper\\src\\VSVoxelSniperModSystem.cs",
               "ToolTip": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\VSVoxelSniperModSystem.cs",
               "RelativeToolTip": "VSVoxelSniper\\VSVoxelSniper\\src\\VSVoxelSniperModSystem.cs",
-              "ViewState": "AgIAAG4AAAAAAAAAAAAwwIUAAABiAAAAAAAAAA==",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAAAMYAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-04T03:37:06.456Z",
               "EditorCaption": ""
@@ -160,10 +157,9 @@
               "RelativeDocumentMoniker": "VSVoxelSniper\\VSVoxelSniper\\src\\SniperData.cs",
               "ToolTip": "C:\\Users\\xof\\Documents\\vsmod\\VSVoxelSniper\\VSVoxelSniper\\VSVoxelSniper\\src\\SniperData.cs",
               "RelativeToolTip": "VSVoxelSniper\\VSVoxelSniper\\src\\SniperData.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAABEAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAQwDcAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-04T03:37:44.899Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-04T03:37:44.899Z"
             }
           ]
         }

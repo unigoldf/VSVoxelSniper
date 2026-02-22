@@ -471,6 +471,11 @@ namespace VSVoxelSniper {
                     capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString());
                 }
             }
+            else if (arg1.ToLower() == "spike") {
+                if (SniperData.SetActiveBrushType(SniperData.BrushTypes.spike)) {
+                    capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString());
+                }
+            }
             else if (arg1.ToLower() == "t" || arg1.ToLower() == "tree") {
                 if (SniperData.SetActiveBrushType(SniperData.BrushTypes.tree)) {
                     capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString());
@@ -588,8 +593,8 @@ namespace VSVoxelSniper {
                         SetOverlayDebth(packet.args[2]);
                         SetOverlayPerformer(packet.args[2]);
                     }
-                    capi.ShowChatMessage(SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString() + ".   "
-                        + SniperData.OverlayDebthText + SniperData.GetOverlayDebth().ToString() + ".   "
+                    capi.ShowChatMessage(SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString() + ". "
+                        + SniperData.OverlayDebthText + SniperData.GetOverlayDebth().ToString() + ". "
                         + SniperData.OverlayPerformerText + SniperData.GetActiveOverlayPerformer());
                 }
                 return;
@@ -678,7 +683,9 @@ namespace VSVoxelSniper {
                 }
                 return;
             }
-
+            else {
+                capi.ShowChatMessage("Invalid Brush");
+            }
 
             if (packet.args.Length > 1) {
                 for (int i = 1; i < packet.args.Length; i++) {

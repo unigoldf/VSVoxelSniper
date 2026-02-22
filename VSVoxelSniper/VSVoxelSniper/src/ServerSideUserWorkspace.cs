@@ -181,6 +181,10 @@ namespace VSVoxelSniper {
                 positions = Shapes.face(pos, positions, p.face);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
+            else if (p.brush == SniperData.BrushTypes.spike) {
+                List<BlockPos> positions = Shapes.Spike(pos, p.PlayerEyePos.ToVec3f().Add(new Vec3f(p.PlayerPos.X, p.PlayerPos.Y, p.PlayerPos.Z)), p.brushsize, p.VoxelHeight);
+                SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
+            }
             else if (p.brush == SniperData.BrushTypes.clonestamp) {
                 if (cs == null) {
                     cs = new CloneStamp();

@@ -139,6 +139,7 @@ namespace VSVoxelSniper {
                 SniperData.GetActiveReplaceBlock(),
                 TargetBlock.AsVec3i,
                 LocalPlayer.Entity.Pos.XYZ.AsVec3i,
+                LocalPlayer.Entity.LocalEyePos,
                 SniperData.GetBlockFacingEnumFromClass(TargetFace),
                 SniperData.GetActiveBrushType(),
                 SniperData.GetBrushSize(Modified),
@@ -287,6 +288,7 @@ namespace VSVoxelSniper {
         public int[] ReplaceMaterial;
         public Vec3i BlockPos;
         public Vec3i PlayerPos;
+        public Vec3d PlayerEyePos;
         public SniperData.FaceDirection face;
         public SniperData.BrushTypes brush;
         public int brushsize;

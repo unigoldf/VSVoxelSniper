@@ -63,7 +63,8 @@ namespace VSVoxelSniper {
             entity,
             clonestamp,
             tree,
-            forest
+            forest,
+            spike
         }
 
 
@@ -592,7 +593,7 @@ namespace VSVoxelSniper {
 
         #region CraftBrushStrokePacket
 
-        public static BrushDataPacket CreateBrushStrokePacket(ToolType tool, List<Block> Material, List<Block> ReplaceMaterial, Vec3i BlockPos, Vec3i PlayerPos, 
+        public static BrushDataPacket CreateBrushStrokePacket(ToolType tool, List<Block> Material, List<Block> ReplaceMaterial, Vec3i BlockPos, Vec3i PlayerPos, Vec3d PlayerEyePos, 
             FaceDirection face, BrushTypes brush, int brushsize, bool IsModified, PerformerTypes performer, ErosionTypes erosionpreset, int OverlayDebth, SniperData.OverlayPerformers OverlayPerformer,
             int SplatterSeed, int SplatterGrowth, int SplatterRecursions, int VoxelHeight, int VoxelDebth, int VoxelCentroid, SniperData.CloneStampModes CloneStampMode, CloneStampQueueModes CloneStampQueueMode,
             CloneStampRotationModes cloneStampRotationMode, bool CloneStampForestOption, float CloneStampForestDensity, List<string> TreeTypes, Vec2f TreeSizeRange, float TreeDensity) {
@@ -606,6 +607,7 @@ namespace VSVoxelSniper {
             packet.ReplaceMaterial = rmats;
             packet.BlockPos = BlockPos;
             packet.PlayerPos = PlayerPos;
+            packet.PlayerEyePos = PlayerEyePos;
             packet.face = face;
             packet.brush = brush;
             packet.brushsize = brushsize;

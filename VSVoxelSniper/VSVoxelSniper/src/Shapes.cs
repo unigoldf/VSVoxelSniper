@@ -175,9 +175,33 @@ namespace VSVoxelSniper {
                     selection.Add(n);
                 }
             }
-
-
             return selection;
+        }
+        public static List<BlockPos> Spike(BlockPos pos, Vec3f PlayerOrigin,int basesize, int height) {
+            List<BlockPos> points = ball(pos, basesize);
+
+            Console.WriteLine(PlayerOrigin);
+
+            Vec3f heading = PlayerOrigin - pos.ToVec3f();
+            float distance = (float)Math.Sqrt(heading.X * heading.X + heading.Y * heading.Y + heading.Z * heading.Z);
+            Vec3f direction = heading / distance;
+
+            Vec3f tippos = pos.ToVec3f() + (float)height * direction;
+            BlockPos tip = new BlockPos(tippos.AsVec3i, pos.dimension);
+
+            List<BlockPos> NewPoints = new List<BlockPos>();
+            foreach (BlockPos point in points) {
+                double dist = Vec3iDistance(tip.AsVec3i, point.AsVec3i);
+                if (dist > (double)distance + 2d || dist < (double)distance - 2d) { continue; }
+                List<BlockPos> templine = line(point, tip);
+                foreach (BlockPos addition in templine) {
+                    if (!NewPoints.Contains(addition)) {
+                        NewPoints.Add(addition);
+                    }
+                }
+            }
+
+            return NewPoints;
         }
         public static List<BlockPos> forest(IBlockAccessorRevertable bar, BlockPos target, int radius, float density, BrushDataPacket packet) {
             List<BlockPos> points = new List<BlockPos>();
