@@ -7,6 +7,7 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.Common;
 using Vintagestory.ServerMods;
+using VSVoxelSniper.Brushes;
 using VSVoxelSniper.src;
 
 
@@ -23,11 +24,15 @@ namespace VSVoxelSniper {
         IServerNetworkChannel serverChannel;
         IClientNetworkChannel clientChannel;
 
+        public HeightBrush hb;
+
         public override void StartServerSide(ICoreServerAPI sapi) {
             base.StartServerSide(sapi);
             this.sapi = sapi;
             RegisterCommands();
             RegisterPermissions();
+            hb = new HeightBrush();
+            hb.sapi = sapi;
             serverChannel = sapi.Network.RegisterChannel("VintageStoryVoxelSniper")
                 .RegisterMessageType(typeof(BrushDataPacket))
                 .SetMessageHandler(new NetworkClientMessageHandler<BrushDataPacket>(this.OnReceivedBrushPacket))
@@ -236,6 +241,7 @@ namespace VSVoxelSniper {
             ws.PlayerID = playerid;
             ws.sapi = sapi;
             ws.api = api;
+            ws.hb = hb;
             Spaces.Add(ws);
             return ws;
         }
@@ -260,6 +266,7 @@ namespace VSVoxelSniper {
         private void SetDefaultBrushSettings() {
             SniperData.SetUnmodifiedBrushSize(3, 3);
             SniperData.SetModifiedBrushSize(5, 5);
+            SniperData.SetVoxelHeight(new Vec2i(0,0));
             List<Block> block = new List<Block>();
             block.Add(api.World.GetBlock(new AssetLocation("rock-claystone")));
             SniperData.SetActiveBlock(block);

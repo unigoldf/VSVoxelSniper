@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
+using System.IO;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
-using Vintagestory.ServerMods;
-using VSVoxelSniper.assets;
-using VSVoxelSniper.assets.Brushes;
-using VSVoxelSniper.src.Brushes;
+using VSVoxelSniper.Brushes;
 
 namespace VSVoxelSniper {
     internal class ServerSideUserWorkspace {
@@ -24,6 +20,7 @@ namespace VSVoxelSniper {
 
         CloneStamp cs;
         TreeGeneration tg;
+        public HeightBrush hb;
 
         public List<BlockPos> GunpowderHistory = new List<BlockPos>();
         public List<BlockPos> ArrowHistory = new List<BlockPos>();
@@ -142,6 +139,9 @@ namespace VSVoxelSniper {
             else if (p.brush == SniperData.BrushTypes.fillfluid) {
                 List<BlockPos> positions = Fill.FillLiquid(bar, p);
                 Fill.PlaceLiquid(bar, positions, p);
+            }
+            else if (p.brush == SniperData.BrushTypes.heightbrush){
+                hb.LoadHeightMaps(player);
             }
             else if (p.brush == SniperData.BrushTypes.blendball) {
                 Blend.BlendBall(bar, p);

@@ -82,27 +82,39 @@ namespace VSVoxelSniper {
         }
 
 
-        public static List<BlockPos> ball(BlockPos block, double radius) {
+        public static List<BlockPos> ball(BlockPos block, float radius) {
             List<BlockPos> selection = new List<BlockPos>();
 
-            double AdjustedRadius = radius + 0.5;
-            double radiusSquared = Math.Pow(AdjustedRadius, 2);
+            float AdjustedRadius = radius + 0.5f;
 
-            int bx = block.X;
-            int by = block.Y;
-            int bz = block.Z;
-
-            for (int x = (int)(bx - radius); x <= bx + radius; x++) {
-                for (int y = (int)(by - radius); y <= by + radius; y++) {
-                    for (int z = (int)(bz - radius); z <= bz + radius; z++) {
-                        double distance = (bx - x) * (bx - x) + (bz - z) * (bz - z) + (by - y) * (by - y);
-                        if (distance <= radiusSquared) {
-                            selection.Add(new BlockPos(x, y, z));
+            for (int z = (int)AdjustedRadius; z >= -radius; z--) {
+                for (int x = (int)AdjustedRadius; x >= -radius; x--) {
+                    for (int y = (int)AdjustedRadius; y >= -radius; y--){
+                        Vec3i pos = new Vec3i(block.X + x, block.Y + z, block.Z + y);
+                        if (Vec3iDistance(block.AsVec3i, pos) <= AdjustedRadius){
+                            selection.Add(new BlockPos(pos, block.dimension));
                         }
                     }
                 }
             }
+            return selection;
+        }
+        public static List<BlockPos> hollowball(BlockPos block, float radius, int thickness) {
+            List<BlockPos> selection = new List<BlockPos>();
 
+            float AdjustedRadius = radius + 0.5f;
+
+            for (int z = (int)AdjustedRadius; z >= -radius; z--) {
+                for (int x = (int)AdjustedRadius; x >= -radius; x--) {
+                    for (int y = (int)AdjustedRadius; y >= -radius; y--){
+                        Vec3i pos = new Vec3i(block.X + x, block.Y + z, block.Z + y);
+                        double dist = Vec3iDistance(block.AsVec3i, pos);
+                        if (dist <= AdjustedRadius && dist >= AdjustedRadius - thickness){
+                            selection.Add(new BlockPos(pos, block.dimension));
+                        }
+                    }
+                }
+            }
             return selection;
         }
         public static List<BlockPos> face(BlockPos center, List<BlockPos> shape, SniperData.FaceDirection face) {
@@ -178,21 +190,22 @@ namespace VSVoxelSniper {
             return selection;
         }
         public static List<BlockPos> Spike(BlockPos pos, Vec3f PlayerOrigin,int basesize, int height) {
-            List<BlockPos> points = ball(pos, basesize);
-
-            Console.WriteLine(PlayerOrigin);
+            basesize = Math.Clamp(basesize, 0, 25);
+            List<BlockPos> sball = ball(pos, basesize);
+            List<BlockPos> points = hollowball(pos, basesize,1);
 
             Vec3f heading = PlayerOrigin - pos.ToVec3f();
             float distance = (float)Math.Sqrt(heading.X * heading.X + heading.Y * heading.Y + heading.Z * heading.Z);
             Vec3f direction = heading / distance;
 
             Vec3f tippos = pos.ToVec3f() + (float)height * direction;
+            float tipposdist = (float)Vec3iDistance(pos.AsVec3i, tippos.AsVec3i);
             BlockPos tip = new BlockPos(tippos.AsVec3i, pos.dimension);
 
             List<BlockPos> NewPoints = new List<BlockPos>();
             foreach (BlockPos point in points) {
-                double dist = Vec3iDistance(tip.AsVec3i, point.AsVec3i);
-                if (dist > (double)distance + 2d || dist < (double)distance - 2d) { continue; }
+                float dist = (float)Vec3iDistance(tip.AsVec3i, point.AsVec3i);
+                if (dist > tipposdist ) { continue; }
                 List<BlockPos> templine = line(point, tip);
                 foreach (BlockPos addition in templine) {
                     if (!NewPoints.Contains(addition)) {
@@ -201,6 +214,11 @@ namespace VSVoxelSniper {
                 }
             }
 
+            foreach (BlockPos point in sball){
+                if (!NewPoints.Contains(point)){
+                    NewPoints.Add(point);
+                }
+            }
             return NewPoints;
         }
         public static List<BlockPos> forest(IBlockAccessorRevertable bar, BlockPos target, int radius, float density, BrushDataPacket packet) {
@@ -305,9 +323,7 @@ namespace VSVoxelSniper {
 
             return NewPoints;
         }
-
-
-
+        
         public static Vec3i Vec3iSubtract(Vec3i one, Vec3i two) {
             Vec3i result = new Vec3i(
                 one.X - two.X,

@@ -7,7 +7,7 @@ using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 using static VSVoxelSniper.SniperData;
 
-namespace VSVoxelSniper.src.Brushes {
+namespace VSVoxelSniper.Brushes {
 
     internal static class Fill {
 

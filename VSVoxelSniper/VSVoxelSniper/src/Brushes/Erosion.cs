@@ -4,7 +4,7 @@ using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Util;
 
-namespace VSVoxelSniper.assets.Brushes {
+namespace VSVoxelSniper.Brushes {
     static class Erosion {
         private static Vec3i[] BlockOffsets = {
             new Vec3i(0, 0, 1),

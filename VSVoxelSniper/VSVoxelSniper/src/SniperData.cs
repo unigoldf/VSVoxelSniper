@@ -13,6 +13,7 @@ namespace VSVoxelSniper {
         public const string BrushSizeSetToText = "Brush Size set to: ";
         public const string ModifiedBrushSizeSetToText = "Modified Brush Size set to: ";
         public const string MaterialSetToText = "Material Set To: ";
+        public const string PerformerSetToText = "performer type set to: ";
         public const string ReplaceMaterialSetToText = "Brush Will Replace: ";
         public const string OverlayDebthText = "Debth set to: ";
         public const string OverlayPerformerText = "Overlay Performer set to: ";
@@ -64,7 +65,8 @@ namespace VSVoxelSniper {
             clonestamp,
             tree,
             forest,
-            spike
+            spike,
+            heightbrush
         }
 
 
@@ -179,15 +181,23 @@ namespace VSVoxelSniper {
 
         #region Height, debth, and centroid
 
-        private static int VoxelHeight = 0;
+        private static Vec2i VoxelHeight;
         private static int VoxelDebth = 0;
         private static int VoxelCentroid = 0;
 
-        public static void SetVoxelHeight(int height) {
+        public static void SetVoxelHeight(Vec2i height) {
             VoxelHeight = height;
         }
-        public static int GetVoxelHeight() {
-            return VoxelHeight;
+        public static int GetVoxelHeight(){
+            Random rand = new Random();
+            return rand.Next(VoxelHeight.X, VoxelHeight.Y);
+        }
+
+        public static string GetVoxelHeightText(){
+            if (VoxelHeight.X == VoxelHeight.Y){
+                return "Voxel Height set to: " + VoxelHeight.X;
+            }
+            return "Voxel Height set to range of " + VoxelHeight.X + " to " + VoxelHeight.Y;
         }
         public static void SetVoxelDebth(int debth) {
             VoxelDebth = debth;
@@ -513,12 +523,19 @@ namespace VSVoxelSniper {
 
         public enum PerformerTypes {
             Material,
-            MaterialReplace
+            MaterialReplace,
+            Override,
+            OverrideSolid,
+            OverrideLiquid
         }
         public static PerformerTypes ActivePerformer = PerformerTypes.Material;
         public static bool SetPerformer(PerformerTypes performer) {
             ActivePerformer = performer;
             return true;
+        }
+
+        public static PerformerTypes GetActivePerformer(){
+            return ActivePerformer;
         }
 
         #endregion
@@ -666,38 +683,68 @@ namespace VSVoxelSniper {
         }
 
         public static void SetBlock(IBlockAccessorRevertable bar, PerformerTypes performer, BlockPos pos, int[] blockid, int[] replacingblockid = null, bool commit = false) {
-
-
+            
             if (performer == PerformerTypes.Material) {
                 Block block = bar.GetBlock(blockid[RandomInt(blockid)]);
                 if (block.ForFluidsLayer) {
                     bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Fluid);
                     bar.SetBlock(0, pos, BlockLayersAccess.Solid);
-                    
-                    //bar.ExchangeBlock(blockid[RandomInt(blockid)], pos);
                 }
                 else {
                     bar.SetBlock(0, pos, BlockLayersAccess.Fluid);
                     bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
-                    //bar.ExchangeBlock(blockid[RandomInt(blockid)], pos);
                 }
             }
             else if (performer == PerformerTypes.MaterialReplace) {
-
                 if (replacingblockid == null) { return; }
                 Block block = bar.GetBlock(blockid[RandomInt(blockid)]);
-
                 if (IsReplaceable(bar.GetBlock(pos).BlockId, replacingblockid)) {
-
                     if (block.ForFluidsLayer) {
                         bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Fluid);
                         bar.SetBlock(0, pos, BlockLayersAccess.Solid);
-                        //bar.ExchangeBlock(blockid[RandomInt(blockid)], pos);
                     }
                     else {
                         bar.SetBlock(0, pos, BlockLayersAccess.Fluid);
                         bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
-                        //bar.ExchangeBlock(blockid[RandomInt(blockid)], pos);
+                    }
+                }
+            }
+            else if (performer == PerformerTypes.Override) {
+                Block block = bar.GetBlock(blockid[RandomInt(blockid)]);
+                if (bar.GetBlock(pos, BlockLayersAccess.FluidOrSolid).BlockId != 0) {
+                    if (block.ForFluidsLayer) {
+                        bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Fluid);
+                        bar.SetBlock(0, pos, BlockLayersAccess.Solid);
+                    }
+                    else {
+                        bar.SetBlock(0, pos, BlockLayersAccess.Fluid);
+                        bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
+                    }
+                }
+            }
+            else if (performer == PerformerTypes.OverrideSolid) {
+                Block block = bar.GetBlock(blockid[RandomInt(blockid)]);
+                if (bar.GetBlock(pos, BlockLayersAccess.Solid).BlockId != 0) {
+                    if (block.ForFluidsLayer) {
+                        bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Fluid);
+                        bar.SetBlock(0, pos, BlockLayersAccess.Solid);
+                    }
+                    else {
+                        bar.SetBlock(0, pos, BlockLayersAccess.Fluid);
+                        bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
+                    }
+                }
+            }
+            else if (performer == PerformerTypes.OverrideLiquid) {
+                Block block = bar.GetBlock(blockid[RandomInt(blockid)]);
+                if (bar.GetBlock(pos, BlockLayersAccess.Fluid).BlockId != 0 ) {
+                    if (block.ForFluidsLayer) {
+                        bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Fluid);
+                        bar.SetBlock(0, pos, BlockLayersAccess.Solid);
+                    }
+                    else {
+                        bar.SetBlock(0, pos, BlockLayersAccess.Fluid);
+                        bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
                     }
                 }
             }
@@ -717,8 +764,8 @@ namespace VSVoxelSniper {
             return false;
         }
         public static void Drain(List<BlockPos> blocks, IBlockAccessorRevertable bar) {
-            for (int i = 0; i < blocks.Count; i++) {
-                bar.SetBlock(0, blocks[i], BlockLayersAccess.Fluid);
+            foreach (BlockPos block in blocks){
+                bar.SetBlock(0, block, BlockLayersAccess.Fluid);
             }
             bar.Commit();
         }

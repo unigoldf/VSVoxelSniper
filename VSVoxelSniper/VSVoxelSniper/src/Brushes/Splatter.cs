@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 
-namespace VSVoxelSniper.src.Brushes {
+namespace VSVoxelSniper.Brushes {
     static class Splatter {
 
         public static int SeedMin = 1;

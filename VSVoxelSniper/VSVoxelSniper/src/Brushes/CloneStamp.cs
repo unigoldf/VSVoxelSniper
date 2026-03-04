@@ -7,7 +7,7 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 
 
-namespace VSVoxelSniper.src.Brushes {
+namespace VSVoxelSniper.Brushes {
     class CloneStamp {
 
 

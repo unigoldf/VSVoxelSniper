@@ -45,15 +45,15 @@ namespace CakeBuild {
                 return;
             }
             var jsonFiles = context.GetFiles($"../{BuildContext.ProjectName}/assets/**/*.json");
-            foreach (var file in jsonFiles) {
-                try {
-                    var json = File.ReadAllText(file.FullPath);
-                    JToken.Parse(json);
-                }
-                catch (JsonException ex) {
-                    throw new Exception($"Validation failed for JSON file: {file.FullPath}{Environment.NewLine}{ex.Message}", ex);
-                }
-            }
+             foreach (var file in jsonFiles) {
+                 try {
+                     var json = File.ReadAllText(file.FullPath);
+                     JToken.Parse(json);
+                 }
+                 catch (JsonException ex) {
+                     throw new Exception($"Validation failed for JSON file: {file.FullPath}{Environment.NewLine}{ex.Message}", ex);
+                 }
+             }
         }
     }
 
@@ -86,6 +86,7 @@ namespace CakeBuild {
                 context.CopyDirectory($"../{BuildContext.ProjectName}/assets", $"../Releases/{context.Name}/assets");
             }
             context.CopyFile($"../{BuildContext.ProjectName}/modinfo.json", $"../Releases/{context.Name}/modinfo.json");
+            context.CopyDirectory($"../{BuildContext.ProjectName}/VoxelSniperHeightMaps", $"../Releases/{context.Name}/VoxelSniperHeightMaps");
             if (context.FileExists($"../{BuildContext.ProjectName}/modicon.png")) {
                 context.CopyFile($"../{BuildContext.ProjectName}/modicon.png", $"../Releases/{context.Name}/modicon.png");
             }

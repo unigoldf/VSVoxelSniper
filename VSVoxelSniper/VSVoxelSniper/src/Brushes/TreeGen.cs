@@ -6,7 +6,7 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using Vintagestory.ServerMods;
 
-namespace VSVoxelSniper.src.Brushes {
+namespace VSVoxelSniper.Brushes {
     class TreeGeneration {
         private TreeGeneratorsUtil treeGenerators;
 

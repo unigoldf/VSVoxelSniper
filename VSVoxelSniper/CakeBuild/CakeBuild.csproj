@@ -13,7 +13,7 @@
   
   <ItemGroup>
     <Reference Include="VintagestoryAPI">
-      <HintPath>$(VINTAGE_STORY)/VintagestoryAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\.local\share\vintagestory\VintagestoryAPI.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ using Vintagestory.API.Server;
 using Vintagestory.GameContent;
 using Vintagestory.ServerMods.NoObf;
 
-namespace VSVoxelSniper.src.Brushes {
+namespace VSVoxelSniper.Brushes {
     internal class Entitys {
         public static void SpawnEntity(ICoreServerAPI sapi, string id) {
             EntityProperties entityProp = sapi.World.GetEntityType(new AssetLocation(id));

@@ -8,7 +8,7 @@ using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
 using VSCreativeMod;
 
-namespace VSVoxelSniper.src.Brushes {
+namespace VSVoxelSniper.Brushes {
     internal static class Blend {
 
         private static Vec3i[] BlockOffsets = {

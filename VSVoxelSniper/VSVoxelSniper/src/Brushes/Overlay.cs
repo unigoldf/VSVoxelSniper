@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Vintagestory.API.Common;
 using Vintagestory.API.MathTools;
 
-namespace VSVoxelSniper.assets.Brushes {
+namespace VSVoxelSniper.Brushes {
     static class Overlay {
 
         private const int MaxScanDebth = 30;
