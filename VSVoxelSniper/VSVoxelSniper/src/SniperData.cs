@@ -28,6 +28,7 @@ namespace VSVoxelSniper {
         public const string CloneStampQueueModeSetToText = "Queue: ";
         public const string CloneStampForestModeSetToText = "Forest Mode: ";
         public const string CloneStampForestDensitySetToText = "Forest Density: ";
+        public const string HeightBrushMapSetToText =  "Height Map set to: ";
         #endregion
 
         #region BrushAndToolTypes
@@ -552,6 +553,19 @@ namespace VSVoxelSniper {
         }
 
         #endregion
+        
+        #region HeightBrush
+
+        private static string ActiveHeightBrushMapName = "mountain";
+
+        public static void SetActiveHeightBrushMap(string name){
+            ActiveHeightBrushMapName = name;
+        }
+        public static string GetActiveHeightBrushMapName() {
+            return ActiveHeightBrushMapName;
+        }
+        
+        #endregion
 
         #region FaceEnum
 
@@ -613,7 +627,8 @@ namespace VSVoxelSniper {
         public static BrushDataPacket CreateBrushStrokePacket(ToolType tool, List<Block> Material, List<Block> ReplaceMaterial, Vec3i BlockPos, Vec3i PlayerPos, Vec3d PlayerEyePos, 
             FaceDirection face, BrushTypes brush, int brushsize, bool IsModified, PerformerTypes performer, ErosionTypes erosionpreset, int OverlayDebth, SniperData.OverlayPerformers OverlayPerformer,
             int SplatterSeed, int SplatterGrowth, int SplatterRecursions, int VoxelHeight, int VoxelDebth, int VoxelCentroid, SniperData.CloneStampModes CloneStampMode, CloneStampQueueModes CloneStampQueueMode,
-            CloneStampRotationModes cloneStampRotationMode, bool CloneStampForestOption, float CloneStampForestDensity, List<string> TreeTypes, Vec2f TreeSizeRange, float TreeDensity) {
+            CloneStampRotationModes cloneStampRotationMode, bool CloneStampForestOption, float CloneStampForestDensity, List<string> TreeTypes, Vec2f TreeSizeRange, float TreeDensity,
+            string HeightBrushMap) {
 
             int[] mats = ConvertBlockListToArray(Material);
             int[] rmats = ConvertBlockListToArray(ReplaceMaterial);
@@ -647,6 +662,7 @@ namespace VSVoxelSniper {
             packet.TreeTypes = TreeTypes;
             packet.TreeSizeRange = TreeSizeRange;
             packet.TreeDensity = TreeDensity;
+            packet.HightBrushMap = HeightBrushMap;
             return packet;
         }
 

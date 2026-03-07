@@ -20,7 +20,7 @@ namespace VSVoxelSniper {
 
         CloneStamp cs;
         TreeGeneration tg;
-        public HeightBrush hb;
+        public HeightBrush heightBrush;
 
         public List<BlockPos> GunpowderHistory = new List<BlockPos>();
         public List<BlockPos> ArrowHistory = new List<BlockPos>();
@@ -141,7 +141,8 @@ namespace VSVoxelSniper {
                 Fill.PlaceLiquid(bar, positions, p);
             }
             else if (p.brush == SniperData.BrushTypes.heightbrush){
-                hb.LoadHeightMaps(player);
+                List<BlockPos> positions = heightBrush.HeightBrushOperation(pos, p.brushsize, p.VoxelHeight, p.HightBrushMap, bar, player);
+                SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.blendball) {
                 Blend.BlendBall(bar, p);

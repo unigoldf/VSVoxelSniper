@@ -86,7 +86,7 @@ namespace CakeBuild {
                 context.CopyDirectory($"../{BuildContext.ProjectName}/assets", $"../Releases/{context.Name}/assets");
             }
             context.CopyFile($"../{BuildContext.ProjectName}/modinfo.json", $"../Releases/{context.Name}/modinfo.json");
-            context.CopyDirectory($"../{BuildContext.ProjectName}/VoxelSniperHeightMaps", $"../Releases/{context.Name}/VoxelSniperHeightMaps");
+            context.CopyDirectory($"../{BuildContext.ProjectName}/HeightMaps", $"../Releases/{context.Name}/HeightMaps");
             if (context.FileExists($"../{BuildContext.ProjectName}/modicon.png")) {
                 context.CopyFile($"../{BuildContext.ProjectName}/modicon.png", $"../Releases/{context.Name}/modicon.png");
             }

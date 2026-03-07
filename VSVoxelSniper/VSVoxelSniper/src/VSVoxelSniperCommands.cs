@@ -526,8 +526,22 @@ namespace VSVoxelSniper{
             }
             else if (arg1.ToLower() == "hb" || arg1.ToLower() == "heightbrush"){
                 if (SniperData.SetActiveBrushType(SniperData.BrushTypes.heightbrush)){
-                    capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText +
-                                         SniperData.GetActiveBrushType().ToString());
+                    if (packet.args.Length > 1){
+                        string arg2 =  packet.args[1];
+                        if (!SetActiveHeightMap(arg2, packet.ValidHeightMaps)){
+                            string ValidMapText = "Valid Maps: ";
+                            foreach (string str in packet.ValidHeightMaps)
+                            {
+                                ValidMapText += " " + str + ",";
+                            }
+                            ValidMapText = ValidMapText.Remove(ValidMapText.Length -1, 1) + ".";
+                            capi.ShowChatMessage(Environment.NewLine + "Invalid Map." + Environment.NewLine + ValidMapText);
+                            return;
+                        }
+                    }
+                    capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString() + 
+                                         Environment.NewLine + SniperData.VoxelHeightSetToText + SniperData.GetVoxelHeight() +
+                                         Environment.NewLine + SniperData.HeightBrushMapSetToText + " " + SniperData.GetActiveHeightBrushMapName());
                 }
             }
             else if (arg1.ToLower() == "ray"){
@@ -889,6 +903,16 @@ namespace VSVoxelSniper{
             }
         }
 
+        private bool SetActiveHeightMap(string arg, string[] mapnames){
+            foreach (string str in mapnames){
+                if (str.ToLower() == arg.ToLower()){
+                    SniperData.SetActiveHeightBrushMap(str);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private string ParseTreeString(string args, string[] ValidTrees){
             args = args.ToLower().Trim();
             String[] ArgsList = args.Split(',');
@@ -1090,6 +1114,10 @@ namespace VSVoxelSniper{
                 p.args = Arguments;
                 if (Arguments[0] == "t" || Arguments[0] == "tree" || Arguments[0] == "forest"){
                     p.ValidTreeTypes = sapi.World.TreeGenerators.Keys.Select(a => a.Path).ToArray();
+                }
+
+                if (Arguments[0] == "hb" || Arguments[0] == "heightbrush"){
+                    p.ValidHeightMaps = hb.GetHeightMaps();
                 }
             }
 

@@ -26,6 +26,8 @@ namespace VSVoxelSniper {
 
         public HeightBrush hb;
 
+        public Config vsconfig;
+
         public override void StartServerSide(ICoreServerAPI sapi) {
             base.StartServerSide(sapi);
             this.sapi = sapi;
@@ -33,6 +35,8 @@ namespace VSVoxelSniper {
             RegisterPermissions();
             hb = new HeightBrush();
             hb.sapi = sapi;
+            vsconfig = new Config(hb, sapi);
+            vsconfig.Initialize();
             serverChannel = sapi.Network.RegisterChannel("VintageStoryVoxelSniper")
                 .RegisterMessageType(typeof(BrushDataPacket))
                 .SetMessageHandler(new NetworkClientMessageHandler<BrushDataPacket>(this.OnReceivedBrushPacket))
@@ -166,7 +170,8 @@ namespace VSVoxelSniper {
                 SniperData.GetCloneStampForestDensity(),
                 SniperData.GetActiveTreetypes(),
                 SniperData.GetTreeSizeRange(),
-                SniperData.GetTreeDensity()
+                SniperData.GetTreeDensity(),
+                SniperData.GetActiveHeightBrushMapName()
                 );
             clientChannel.SendPacket(p);
         }
@@ -241,7 +246,7 @@ namespace VSVoxelSniper {
             ws.PlayerID = playerid;
             ws.sapi = sapi;
             ws.api = api;
-            ws.hb = hb;
+            ws.heightBrush = hb;
             Spaces.Add(ws);
             return ws;
         }
@@ -287,6 +292,7 @@ namespace VSVoxelSniper {
         public string CommandType;
         public string[] args;
         public string[] ValidTreeTypes;
+        public string[] ValidHeightMaps;
     }
 
     [ProtoContract(ImplicitFields = ImplicitFields.AllPublic)]
@@ -319,5 +325,6 @@ namespace VSVoxelSniper {
         public List<String> TreeTypes;
         public Vec2f TreeSizeRange;
         public float TreeDensity;
+        public string HightBrushMap;
     }
 }
