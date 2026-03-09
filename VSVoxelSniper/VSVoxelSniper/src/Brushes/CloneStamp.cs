@@ -18,10 +18,10 @@ namespace VSVoxelSniper.Brushes {
         int CurrentRotation = 0;
         int SchematicIndex = -1;
 
-        public void Clone(IBlockAccessorRevertable bar, ICoreServerAPI sapi, BrushDataPacket p, IPlayer player) {
+        public void Clone(IBlockAccessorRevertable bar, ICoreServerAPI sapi, BrushDataPacket p, int brushsize, IPlayer player) {
             int dim = player.Entity.Pos.Dimension;
-            BlockPos pos1 = new BlockPos(new Vec3i(p.BlockPos.X - p.brushsize, p.BlockPos.Y - p.VoxelCentroid, p.BlockPos.Z - p.brushsize), dim);
-            BlockPos pos2 = new BlockPos(new Vec3i(p.BlockPos.X + p.brushsize, (p.BlockPos.Y - p.VoxelCentroid) + p.VoxelHeight, p.BlockPos.Z + p.brushsize), dim);
+            BlockPos pos1 = new BlockPos(new Vec3i(p.BlockPos.X - brushsize, p.BlockPos.Y - p.VoxelCentroid, p.BlockPos.Z - brushsize), dim);
+            BlockPos pos2 = new BlockPos(new Vec3i(p.BlockPos.X + brushsize, (p.BlockPos.Y - p.VoxelCentroid) + p.VoxelHeight, p.BlockPos.Z + brushsize), dim);
 
             BlockSchematic schem = new BlockSchematic();
             schem.AddArea(sapi.World, pos1, pos2);

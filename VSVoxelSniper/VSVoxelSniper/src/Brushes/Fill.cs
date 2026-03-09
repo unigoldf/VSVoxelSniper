@@ -15,14 +15,14 @@ namespace VSVoxelSniper.Brushes {
 
 
 
-        internal static List<BlockPos> FillDown(IBlockAccessorRevertable bar, BrushDataPacket p) {
+        internal static List<BlockPos> FillDown(IBlockAccessorRevertable bar, BrushDataPacket p, int brushsize) {
             List<BlockPos> selection = new List<BlockPos>();
 
-            double AdjustedRadius = p.brushsize + 0.5;
+            double AdjustedRadius = brushsize + 0.5;
             double radiusSquared = Math.Pow(AdjustedRadius, 2);
 
-            for (int x = p.BlockPos.X - p.brushsize; x <= p.BlockPos.X + p.brushsize; x++) {
-                for (int z = p.BlockPos.Z - p.brushsize; z <= p.BlockPos.Z + p.brushsize; z++) {
+            for (int x = p.BlockPos.X - brushsize; x <= p.BlockPos.X + brushsize; x++) {
+                for (int z = p.BlockPos.Z - brushsize; z <= p.BlockPos.Z + brushsize; z++) {
                     double distance = (p.BlockPos.X - x) * (p.BlockPos.X - x) + (p.BlockPos.Z - z) * (p.BlockPos.Z - z);
                     if (distance <= radiusSquared) {
                         for (int y = p.BlockPos.Y; y > 0; y--) {
@@ -40,14 +40,14 @@ namespace VSVoxelSniper.Brushes {
             return selection;
         }
 
-        internal static List<BlockPos> FillLiquid(IBlockAccessorRevertable bar, BrushDataPacket p) {
+        internal static List<BlockPos> FillLiquid(IBlockAccessorRevertable bar, BrushDataPacket p, int brushsize) {
             List<BlockPos> selection = new List<BlockPos>();
 
-            double AdjustedRadius = p.brushsize + 0.5;
+            double AdjustedRadius = brushsize + 0.5;
             double radiusSquared = Math.Pow(AdjustedRadius, 2);
 
-            for (int x = p.BlockPos.X - p.brushsize; x <= p.BlockPos.X + p.brushsize; x++) {
-                for (int z = p.BlockPos.Z - p.brushsize; z <= p.BlockPos.Z + p.brushsize; z++) {
+            for (int x = p.BlockPos.X - brushsize; x <= p.BlockPos.X + brushsize; x++) {
+                for (int z = p.BlockPos.Z - brushsize; z <= p.BlockPos.Z + brushsize; z++) {
                     double distance = (p.BlockPos.X - x) * (p.BlockPos.X - x) + (p.BlockPos.Z - z) * (p.BlockPos.Z - z);
                     if (distance <= radiusSquared) {
                         int counter = 0;

@@ -505,17 +505,11 @@ namespace VSVoxelSniper {
             return text;
 
         }
-        public static int GetBrushSize(bool IsModified) {
-            int[] MinMax;
-            if (!IsModified) {
-                MinMax = UnmodifiedBrushSize;
-            }
-            else {
-                MinMax = ModifiedBrushSize;
-            }
-            Random rand = new Random();
-            int Result = rand.Next(MinMax[0], MinMax[1]);
-            return Result;
+        public static int[] GetUnmodifiedBrushSize(){
+            return UnmodifiedBrushSize;
+        }
+        public static int[] GetModifiedBrushSize(){
+            return ModifiedBrushSize;
         }
 
         #endregion
@@ -625,7 +619,7 @@ namespace VSVoxelSniper {
         #region CraftBrushStrokePacket
 
         public static BrushDataPacket CreateBrushStrokePacket(ToolType tool, List<Block> Material, List<Block> ReplaceMaterial, Vec3i BlockPos, Vec3i PlayerPos, Vec3d PlayerEyePos, 
-            FaceDirection face, BrushTypes brush, int brushsize, bool IsModified, PerformerTypes performer, ErosionTypes erosionpreset, int OverlayDebth, SniperData.OverlayPerformers OverlayPerformer,
+            FaceDirection face, BrushTypes brush, int[] UnModifiedBrushsize, int[] ModifiedBrushSize, bool IsModified, PerformerTypes performer, ErosionTypes erosionpreset, int OverlayDebth, SniperData.OverlayPerformers OverlayPerformer,
             int SplatterSeed, int SplatterGrowth, int SplatterRecursions, int VoxelHeight, int VoxelDebth, int VoxelCentroid, SniperData.CloneStampModes CloneStampMode, CloneStampQueueModes CloneStampQueueMode,
             CloneStampRotationModes cloneStampRotationMode, bool CloneStampForestOption, float CloneStampForestDensity, List<string> TreeTypes, Vec2f TreeSizeRange, float TreeDensity,
             string HeightBrushMap) {
@@ -642,7 +636,8 @@ namespace VSVoxelSniper {
             packet.PlayerEyePos = PlayerEyePos;
             packet.face = face;
             packet.brush = brush;
-            packet.brushsize = brushsize;
+            packet.UnmodifiedBrushSize = UnModifiedBrushsize;
+            packet.ModifiedBrushSize = ModifiedBrushSize;
             packet.IsModified = IsModified;
             packet.performer = performer;
             packet.erosionpreset = erosionpreset;
@@ -692,9 +687,11 @@ namespace VSVoxelSniper {
         #region SettingBlocks
 
         public static void SetBlocks(List<BlockPos> blocks, IBlockAccessorRevertable bar, PerformerTypes performer, int[] blockid, int[] replacingblockid = null) {
-            for (int i = 0; i < blocks.Count; i++) {
-                SetBlock(bar, performer, blocks[i], blockid, replacingblockid);
+            //bar.BeginMultiEdit();
+            foreach (BlockPos block in blocks) {
+                SetBlock(bar, performer, block, blockid, replacingblockid);
             }
+            //bar.EndMultiEdit();
             bar.Commit();
         }
 
@@ -705,11 +702,14 @@ namespace VSVoxelSniper {
                 if (block.ForFluidsLayer) {
                     bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Fluid);
                     bar.SetBlock(0, pos, BlockLayersAccess.Solid);
+                    //bar.SetBlock(blockid[RandomInt(blockid)], pos);
                 }
                 else {
                     bar.SetBlock(0, pos, BlockLayersAccess.Fluid);
                     bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
                 }
+
+                if (!commit){ return; }
             }
             else if (performer == PerformerTypes.MaterialReplace) {
                 if (replacingblockid == null) { return; }
@@ -724,6 +724,7 @@ namespace VSVoxelSniper {
                         bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
                     }
                 }
+                if (!commit){ return; }
             }
             else if (performer == PerformerTypes.Override) {
                 Block block = bar.GetBlock(blockid[RandomInt(blockid)]);
@@ -737,6 +738,7 @@ namespace VSVoxelSniper {
                         bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
                     }
                 }
+                if (!commit){ return; }
             }
             else if (performer == PerformerTypes.OverrideSolid) {
                 Block block = bar.GetBlock(blockid[RandomInt(blockid)]);
@@ -750,6 +752,7 @@ namespace VSVoxelSniper {
                         bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
                     }
                 }
+                if (!commit){ return; }
             }
             else if (performer == PerformerTypes.OverrideLiquid) {
                 Block block = bar.GetBlock(blockid[RandomInt(blockid)]);
@@ -763,6 +766,7 @@ namespace VSVoxelSniper {
                         bar.SetBlock(blockid[RandomInt(blockid)], pos, BlockLayersAccess.Solid);
                     }
                 }
+                if (!commit){ return; }
             }
             if (commit) { bar.Commit(); }
         }

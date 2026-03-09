@@ -15,9 +15,9 @@ namespace VSVoxelSniper.Brushes {
         public static int RecustionMin = 0;
         public static int RecustionMax = 15;
 
-        public static List<BlockPos> Splatter3d(IBlockAccessorRevertable bar, BrushDataPacket p, BlockPos pos, IPlayer player, bool sphere = false) {
+        public static List<BlockPos> Splatter3d(IBlockAccessorRevertable bar, BrushDataPacket p, int brushsize, BlockPos pos, IPlayer player, bool sphere = false) {
 
-            int[,,] splat = new int[2 * p.brushsize + 1, 2 * p.brushsize + 1, 2 * p.brushsize + 1];
+            int[,,] splat = new int[2 * brushsize + 1, 2 * brushsize + 1, 2 * brushsize + 1];
 
             Random random = new Random();
 
@@ -32,7 +32,7 @@ namespace VSVoxelSniper.Brushes {
             }
 
             int gref = p.SplatterGrowth;
-            int[,,] tempSplat = new int[2 * p.brushsize + 1, 2 * p.brushsize + 1, 2 * p.brushsize + 1];
+            int[,,] tempSplat = new int[2 * brushsize + 1, 2 * brushsize + 1, 2 * brushsize + 1];
             int growcheck = 0;
 
             for (int r = 0; r < Math.Clamp(p.SplatterRecursions, RecustionMin, RecustionMax); r++) {
@@ -85,9 +85,9 @@ namespace VSVoxelSniper.Brushes {
                 for (int y = 0; y < splat.GetLength(1); y++) {
                     for (int z = 0; z < splat.GetLength(2); z++) {
                         if (splat[Math.Max(x - 1, 0), y, z] == 1 &&
-                            splat[Math.Min(x + 1, p.brushsize * 2), y, z] == 1 &&
+                            splat[Math.Min(x + 1, brushsize * 2), y, z] == 1 &&
                             splat[x, Math.Max(0, y - 1), z] == 1 &&
-                            splat[x, Math.Min(2 * p.brushsize, y + 1), z] == 1) {
+                            splat[x, Math.Min(2 * brushsize, y + 1), z] == 1) {
 
                             splat[x, y, z] = 1;
 
@@ -96,13 +96,13 @@ namespace VSVoxelSniper.Brushes {
                 }
             }
 
-            double AdjustedRadius = p.brushsize + 0.5;
+            double AdjustedRadius = brushsize + 0.5;
 
             List<BlockPos> positions = new List<BlockPos>();
-            int offset = p.brushsize + 1;
-            for (int x = 0; x < 2 * p.brushsize + 1; x++) {
-                for (int y = 0; y < 2 * p.brushsize + 1; y++) {
-                    for (int z = 0; z < 2 * p.brushsize + 1; z++) {
+            int offset = brushsize + 1;
+            for (int x = 0; x < 2 * brushsize + 1; x++) {
+                for (int y = 0; y < 2 * brushsize + 1; y++) {
+                    for (int z = 0; z < 2 * brushsize + 1; z++) {
                         Vec3i CurBlockPos = new Vec3i(x + pos.X - offset, y + pos.Y - offset, z + pos.Z - offset);
                         double distance = Shapes.Vec3iDistance(CurBlockPos, pos.AsVec3i);
 
@@ -116,9 +116,9 @@ namespace VSVoxelSniper.Brushes {
             }
             return positions;
         }
-        public static List<BlockPos> Splatter2d(IBlockAccessorRevertable bar, BrushDataPacket p, BlockPos pos, IPlayer player, bool sphere = false) {
+        public static List<BlockPos> Splatter2d(IBlockAccessorRevertable bar, BrushDataPacket p, int brushsize, BlockPos pos, IPlayer player, bool sphere = false) {
 
-            int[,] splat = new int[2 * p.brushsize + 1, 2 * p.brushsize + 1];
+            int[,] splat = new int[2 * brushsize + 1, 2 * brushsize + 1];
 
             Random random = new Random();
 
@@ -135,7 +135,7 @@ namespace VSVoxelSniper.Brushes {
             }
 
             int gref = p.SplatterGrowth;
-            int[,] tempSplat = new int[2 * p.brushsize + 1, 2 * p.brushsize + 1];
+            int[,] tempSplat = new int[2 * brushsize + 1, 2 * brushsize + 1];
             int growcheck = 0;
 
             for (int r = 0; r < Math.Clamp(p.SplatterRecursions, RecustionMin, RecustionMax); r++) {
@@ -182,7 +182,7 @@ namespace VSVoxelSniper.Brushes {
                 //for (int y = 0; y < splat.GetLength(1); y++) {
                 for (int z = 0; z < splat.GetLength(1); z++) {
                     if (splat[Math.Max(x - 1, 0), z] == 1 &&
-                        splat[Math.Min(x + 1, p.brushsize * 2), z] == 1) //&&
+                        splat[Math.Min(x + 1, brushsize * 2), z] == 1) //&&
                                                                             //splat[x, Math.Max(0, y - 1), z] == 1 &&
                                                                             //splat[x, Math.Min(2 * p.brushsize, y + 1), z] == 1) 
                         {
@@ -194,10 +194,10 @@ namespace VSVoxelSniper.Brushes {
                 //}
             }
 
-            double AdjustedRadius = p.brushsize + 0.5;
+            double AdjustedRadius = brushsize + 0.5;
 
             List<BlockPos> positions = new List<BlockPos>();
-            int offset = p.brushsize + 1;
+            int offset = brushsize + 1;
             for (int x = 0; x < splat.GetLength(0); x++) {
                 //for (int y = 0; y < 2 * p.brushsize + 1; y++) {
                 for (int z = 0; z < splat.GetLength(1); z++) {

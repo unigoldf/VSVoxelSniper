@@ -23,7 +23,7 @@ public class HeightBrush{
 
     private List<vsvsbitmap> maps = new List<vsvsbitmap>();
 
-    public List<BlockPos> HeightBrushOperation(BlockPos pos, int radius, float maxheight, string mapnane, IBlockAccessorRevertable bar, IPlayer player){
+    public List<BlockPos> HeightBrushOperation(BlockPos pos, int radius, float maxheight, string mapnane, bool IsModified, IBlockAccessorRevertable bar, IPlayer player){
         List<BlockPos> points = new List<BlockPos>();
         if (maps.Count == 0){ return points; }
         vsvsbitmap map = GetMapFromName(mapnane, player);
@@ -35,9 +35,18 @@ public class HeightBrush{
             for (int z = pos.Z - radius; z < pos.Z + radius + 1; z++){
                 float whitevalue = GetWhiteValueOnMap(xiteration, zinteration, radius * 2 + 2, map, player);
                 int yheight = (int)(whitevalue * maxheight);
-                int startpos = GetLowestPointFromWorldHeight(x, pos.Y, z, radius, bar);
-                for (int y = startpos + 1; y < startpos + yheight; y++){
-                    points.Add(new BlockPos(x, y, z));
+                BlockPos curpos = new BlockPos(x, pos.Y, z, pos.dimension);
+                int startpos = GetBase(curpos, radius, bar);
+                if (!IsModified){
+                    for (int y = startpos + 1; y < startpos + yheight; y++){
+                        points.Add(new BlockPos(x, y, z));
+                    }
+                }
+                else{
+                    Console.WriteLine(startpos + " " + yheight);
+                    for (int y = startpos; y > startpos - yheight; y--){
+                        points.Add(new BlockPos(x, y, z));
+                    }
                 }
 
                 zinteration++;
@@ -54,26 +63,26 @@ public class HeightBrush{
         int xpos = (int)((x / size) * map.Width + (map.Width / size * 2));
         int zpos = (int)((z / size) * map.Height + (map.Height / size * 2));
         SKColor color = map.GetPixel(xpos, zpos);
-        value = (color.Blue + color.Green + color.Red) / 3;
-        value = value / 255f;
+        value = (color.Blue + color.Green + color.Red) * .33333f * .00392f;
         return value;
     }
 
-    private int GetLowestPointFromWorldHeight(int x, int ty, int z, int brushsize, IBlockAccessorRevertable bar){
-        BlockPos pos = new BlockPos(x, ty, z);
+    private int GetBase(BlockPos pos, int brushsize, IBlockAccessorRevertable bar){
         if (bar.GetBlock(pos).BlockId == 0){
-            for (int y = ty; y > 0; y--){
-                Block b = bar.GetBlock(x, y, z, BlockLayersAccess.Solid);
+            for (int y = pos.Y - 1; y > 0; y--){
+                BlockPos temppos = new BlockPos(pos.X, y, pos.Z, pos.dimension);
+                Block b = bar.GetBlock(temppos, BlockLayersAccess.Solid);
                 if (b.BlockId != 0){
                     return y;
                 }
             }
         }
         else{
-            for (int y = ty; y < bar.MapSizeY; y++){
-                Block b = bar.GetBlock(x, y, z, BlockLayersAccess.Solid);
-                if (b.BlockId != 0){
-                    return y;
+            for (int y = pos.Y; y < bar.MapSizeY; y++){
+                BlockPos temppos = new BlockPos(pos.X, y, pos.Z, pos.dimension);
+                Block b = bar.GetBlock(temppos, BlockLayersAccess.Solid);
+                if (b.BlockId == 0){
+                    return y - 1;
                 }
             }
         }

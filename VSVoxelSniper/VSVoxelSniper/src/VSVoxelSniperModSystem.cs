@@ -151,7 +151,8 @@ namespace VSVoxelSniper {
                 LocalPlayer.Entity.LocalEyePos,
                 SniperData.GetBlockFacingEnumFromClass(TargetFace),
                 SniperData.GetActiveBrushType(),
-                SniperData.GetBrushSize(Modified),
+                SniperData.GetUnmodifiedBrushSize(),
+                SniperData.GetModifiedBrushSize(),
                 Modified,
                 SniperData.ActivePerformer,
                 SniperData.GetActiveErosionType(),
@@ -304,7 +305,8 @@ namespace VSVoxelSniper {
         public Vec3d PlayerEyePos;
         public SniperData.FaceDirection face;
         public SniperData.BrushTypes brush;
-        public int brushsize;
+        public int[] UnmodifiedBrushSize;
+        public int[] ModifiedBrushSize;
         public bool IsModified;
         public SniperData.PerformerTypes performer;
         public SniperData.ToolType tool;

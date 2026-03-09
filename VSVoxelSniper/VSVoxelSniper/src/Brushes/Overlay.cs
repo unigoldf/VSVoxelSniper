@@ -31,22 +31,22 @@ namespace VSVoxelSniper.Brushes {
             "water"
         };
 
-        public static List<BlockPos> DoOverlay(IBlockAccessorRevertable bar, BrushDataPacket p, List<BlockPos> splatter = null, bool replaceAll = true) {
+        public static List<BlockPos> DoOverlay(IBlockAccessorRevertable bar, BrushDataPacket p, int brushsize, List<BlockPos> splatter = null, bool replaceAll = true) {
 
             List<BlockPos> Blocks = new List<BlockPos>();
 
-            double AdjustedRadius = p.brushsize + 0.5;
+            double AdjustedRadius = brushsize + 0.5;
             double radiusSquared = Math.Pow(AdjustedRadius, 2);
 
-            int[,] memory = new int[p.brushsize * 2 + 1, p.brushsize * 2 + 1];
+            int[,] memory = new int[brushsize * 2 + 1, brushsize * 2 + 1];
 
-            for (int z = -p.brushsize; z < p.brushsize; z++) {
+            for (int z = -brushsize; z < brushsize; z++) {
 
-                for (int x = -p.brushsize; x < p.brushsize; x++) {
+                for (int x = -brushsize; x < brushsize; x++) {
 
                     for (int y = p.BlockPos.Y; y > p.BlockPos.Y - MaxScanDebth; y--) {
 
-                        if (memory[x + p.brushsize, z + p.brushsize] == 1) { continue; }
+                        if (memory[x + brushsize, z + brushsize] == 1) { continue; }
                         if ((Math.Pow(x, 2) + Math.Pow(z, 2)) > radiusSquared) { break; }
 
                         BlockPos BelowPos = new BlockPos(p.BlockPos.X + x, y - 1, p.BlockPos.Z + z);
@@ -82,7 +82,7 @@ namespace VSVoxelSniper.Brushes {
                             if (IsReplaceable(DBlock, p)) {
                                 Blocks.Add(DPos);
                             }
-                            memory[x + p.brushsize, z + p.brushsize] = 1;
+                            memory[x + brushsize, z + brushsize] = 1;
                         }
                     }
                 }

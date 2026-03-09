@@ -26,7 +26,7 @@ namespace VSVoxelSniper.Brushes {
             new Vec3i(-1, 0, 0)
         };
 
-        public static void BlendVoxel(IBlockAccessorRevertable bar, BrushDataPacket p) {
+        public static void BlendVoxel(IBlockAccessorRevertable bar, BrushDataPacket p,int brushsize) {
             bool Exclude = true;
             if (p.tool == SniperData.ToolType.gunpowder) {
                 Exclude = false;
@@ -36,9 +36,9 @@ namespace VSVoxelSniper.Brushes {
 
             Dictionary<BlockPos, Block> NewBlocks = new Dictionary<BlockPos, Block>();
 
-            for (int x = p.BlockPos.X - p.brushsize; x <= p.BlockPos.X + p.brushsize; x++) {
-                for (int y = p.BlockPos.Y - p.brushsize; y <= p.BlockPos.Y + p.brushsize; y++) {
-                    for (int z = p.BlockPos.Z - p.brushsize; z <= p.BlockPos.Z + p.brushsize; z++) {
+            for (int x = p.BlockPos.X - brushsize; x <= p.BlockPos.X + brushsize; x++) {
+                for (int y = p.BlockPos.Y - brushsize; y <= p.BlockPos.Y + brushsize; y++) {
+                    for (int z = p.BlockPos.Z - brushsize; z <= p.BlockPos.Z + brushsize; z++) {
                         BlockPos pos = new BlockPos(x, y, z);
                         Block block = bar.GetBlock(pos);
                         if (!Exclude && (block.BlockId != 0 && !block.IsLiquid())) { continue; }
@@ -70,7 +70,7 @@ namespace VSVoxelSniper.Brushes {
             }
             SetBlocks(NewBlocks, bar);
         }
-        public static void BlendBall(IBlockAccessorRevertable bar, BrushDataPacket p) {
+        public static void BlendBall(IBlockAccessorRevertable bar, BrushDataPacket p, int brushsize) {
             bool Exclude = true;
             if (p.tool == SniperData.ToolType.gunpowder) {
                 Exclude = false;
@@ -79,12 +79,12 @@ namespace VSVoxelSniper.Brushes {
             Block air = bar.GetBlock(0);
 
             Dictionary<BlockPos, Block> NewBlocks = new Dictionary<BlockPos, Block>();
-            double AdjustedRadius = p.brushsize + 0.5;
+            double AdjustedRadius = brushsize + 0.5;
             double radiusSquared = Math.Pow(AdjustedRadius, 2);
 
-            for (int x = p.BlockPos.X - p.brushsize; x <= p.BlockPos.X + p.brushsize; x++) {
-                for (int y = p.BlockPos.Y - p.brushsize; y <= p.BlockPos.Y + p.brushsize; y++) {
-                    for (int z = p.BlockPos.Z - p.brushsize; z <= p.BlockPos.Z + p.brushsize; z++) {
+            for (int x = p.BlockPos.X - brushsize; x <= p.BlockPos.X + brushsize; x++) {
+                for (int y = p.BlockPos.Y - brushsize; y <= p.BlockPos.Y + brushsize; y++) {
+                    for (int z = p.BlockPos.Z - brushsize; z <= p.BlockPos.Z + brushsize; z++) {
                         double distance = (p.BlockPos.X - x) * (p.BlockPos.X - x) + (p.BlockPos.Y - y) * (p.BlockPos.Y - y) + (p.BlockPos.Z - z) * (p.BlockPos.Z - z);
                         if (distance > radiusSquared) { continue; }
                         BlockPos pos = new BlockPos(x, y, z);
@@ -118,7 +118,7 @@ namespace VSVoxelSniper.Brushes {
             }
             SetBlocks(NewBlocks, bar);
         }
-        public static void BlendDisk(IBlockAccessorRevertable bar, BrushDataPacket p) {
+        public static void BlendDisk(IBlockAccessorRevertable bar, BrushDataPacket p, int brushsize) {
             bool Exclude = true;
             if (p.tool == SniperData.ToolType.gunpowder) {
                 Exclude = false;
@@ -129,11 +129,11 @@ namespace VSVoxelSniper.Brushes {
             int y = p.BlockPos.Y;
 
             Dictionary<BlockPos, Block> NewBlocks = new Dictionary<BlockPos, Block>();
-            double AdjustedRadius = p.brushsize + 0.5;
+            double AdjustedRadius = brushsize + 0.5;
             double radiusSquared = Math.Pow(AdjustedRadius, 2);
 
-            for (int x = p.BlockPos.X - p.brushsize; x <= p.BlockPos.X + p.brushsize; x++) {
-                for (int z = p.BlockPos.Z - p.brushsize; z <= p.BlockPos.Z + p.brushsize; z++) {
+            for (int x = p.BlockPos.X - brushsize; x <= p.BlockPos.X + brushsize; x++) {
+                for (int z = p.BlockPos.Z - brushsize; z <= p.BlockPos.Z + brushsize; z++) {
                     double distance = (p.BlockPos.X - x) * (p.BlockPos.X - x) + (p.BlockPos.Z - z) * (p.BlockPos.Z - z);
                     if (distance > radiusSquared) { continue; }
                     BlockPos pos = new BlockPos(x, y, z);
@@ -166,7 +166,7 @@ namespace VSVoxelSniper.Brushes {
             }
             SetBlocks(NewBlocks, bar);
         }
-        public static void BlendVoxelDisk(IBlockAccessorRevertable bar, BrushDataPacket p) {
+        public static void BlendVoxelDisk(IBlockAccessorRevertable bar, BrushDataPacket p, int brushsize) {
             bool Exclude = true;
             if (p.tool == SniperData.ToolType.gunpowder) {
                 Exclude = false;
@@ -178,8 +178,8 @@ namespace VSVoxelSniper.Brushes {
 
             Dictionary<BlockPos, Block> NewBlocks = new Dictionary<BlockPos, Block>();
 
-            for (int x = p.BlockPos.X - p.brushsize; x <= p.BlockPos.X + p.brushsize; x++) {
-                for (int z = p.BlockPos.Z - p.brushsize; z <= p.BlockPos.Z + p.brushsize; z++) {
+            for (int x = p.BlockPos.X - brushsize; x <= p.BlockPos.X + brushsize; x++) {
+                for (int z = p.BlockPos.Z - brushsize; z <= p.BlockPos.Z + brushsize; z++) {
                     BlockPos pos = new BlockPos(x, y, z);
                     Block block = bar.GetBlock(pos);
                     if (!Exclude && (block.BlockId != 0 && !block.IsLiquid())) { continue; }

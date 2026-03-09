@@ -14,7 +14,7 @@ namespace VSVoxelSniper.Brushes {
             new Vec3i(1, 0, 0),
             new Vec3i(-1, 0, 0)
         };
-        public static void Erode(IPlayer player, BrushDataPacket packet, IBlockAccessorRevertable bar) {
+        public static void Erode(IPlayer player, BrushDataPacket packet, int brushsize, IBlockAccessorRevertable bar) {
             ErosionPreset type = GetPresetValues(packet.erosionpreset);
             if (packet.tool == SniperData.ToolType.gunpowder) {
                 type = getInverted(GetPresetValues(packet.erosionpreset));
@@ -26,14 +26,14 @@ namespace VSVoxelSniper.Brushes {
 
             Vec3i vec = Shapes.Vec3iSubtract(PlayerPosition, BlockPosition);
 
-            float AdjustedRadius = (float)(packet.brushsize + 0.5);
+            float AdjustedRadius = (float)(brushsize + 0.5);
 
             for (int i = 0; i < type.ErosionRecursion; i++) {
-                ErosionIteration(player, packet, type, AdjustedRadius, bar, bct);
+                ErosionIteration(player, packet, brushsize, type, AdjustedRadius, bar, bct);
             }
 
             for (int i = 0; i < type.FillRecursion; i++) {
-                FillIteration(player, packet, type, AdjustedRadius, bar, bct);
+                FillIteration(player, packet, brushsize, type, AdjustedRadius, bar, bct);
             }
 
             foreach (BlockWrapper b in bct.GetAll().Values) {
@@ -47,13 +47,13 @@ namespace VSVoxelSniper.Brushes {
         }
 
 
-        private static void ErosionIteration(IPlayer player, BrushDataPacket packet, ErosionPreset erosionPreset, float MaxRadius, IBlockAccessorRevertable bar, BlockChangeTracker bct) {
+        private static void ErosionIteration(IPlayer player, BrushDataPacket packet, int brushsize, ErosionPreset erosionPreset, float MaxRadius, IBlockAccessorRevertable bar, BlockChangeTracker bct) {
 
             int currentIteration = bct.NextIteration();
 
-            for (int x = packet.BlockPos.X - packet.brushsize; x <= packet.BlockPos.X + packet.brushsize; ++x) {
-                for (int z = packet.BlockPos.Z - packet.brushsize; z <= packet.BlockPos.Z + packet.brushsize; ++z) {
-                    for (int y = packet.BlockPos.Y - packet.brushsize; y <= packet.BlockPos.Y + packet.brushsize; ++y) {
+            for (int x = packet.BlockPos.X - brushsize; x <= packet.BlockPos.X + brushsize; ++x) {
+                for (int z = packet.BlockPos.Z - brushsize; z <= packet.BlockPos.Z + brushsize; ++z) {
+                    for (int y = packet.BlockPos.Y - brushsize; y <= packet.BlockPos.Y + brushsize; ++y) {
 
                         Vec3i CurBlockPos = new Vec3i(x, y, z);
                         double distance = Shapes.Vec3iDistance(CurBlockPos, packet.BlockPos);
@@ -83,13 +83,13 @@ namespace VSVoxelSniper.Brushes {
                 }
             }
         }
-        private static void FillIteration(IPlayer player, BrushDataPacket packet, ErosionPreset erosionPreset, float MaxRadius, IBlockAccessorRevertable bar, BlockChangeTracker bct) {
+        private static void FillIteration(IPlayer player, BrushDataPacket packet, int brushsize, ErosionPreset erosionPreset, float MaxRadius, IBlockAccessorRevertable bar, BlockChangeTracker bct) {
 
             int currentIteration = bct.NextIteration();
 
-            for (int x = packet.BlockPos.X - packet.brushsize; x <= packet.BlockPos.X + packet.brushsize; ++x) {
-                for (int z = packet.BlockPos.Z - packet.brushsize; z <= packet.BlockPos.Z + packet.brushsize; ++z) {
-                    for (int y = packet.BlockPos.Y - packet.brushsize; y <= packet.BlockPos.Y + packet.brushsize; ++y) {
+            for (int x = packet.BlockPos.X - brushsize; x <= packet.BlockPos.X + brushsize; ++x) {
+                for (int z = packet.BlockPos.Z - brushsize; z <= packet.BlockPos.Z + brushsize; ++z) {
+                    for (int y = packet.BlockPos.Y - brushsize; y <= packet.BlockPos.Y + brushsize; ++y) {
                         Vec3i CurBlockPos = new Vec3i(x, y, z);
                         double distance = Shapes.Vec3iDistance(CurBlockPos, packet.BlockPos);
 

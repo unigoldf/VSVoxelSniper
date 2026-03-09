@@ -45,7 +45,7 @@ namespace VSVoxelSniper {
 
         public void HandleBrushStroke(IPlayer player, BrushDataPacket p) {
 
-            double starttime = ((DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds) / 1000;
+            //double starttime = ((DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds) / 1000;
 
             if (!player.HasPrivilege("vsvoxelsniperuser")) { return; }
 
@@ -60,24 +60,24 @@ namespace VSVoxelSniper {
                 return;
             }
 
-            for (int i = 0; i < p.Material.Length; i++) {
+            int brushsize = 0;
+            Random rand = new Random();
+            if (!p.IsModified){
+                brushsize = rand.Next(p.UnmodifiedBrushSize[0], p.UnmodifiedBrushSize[1]);
             }
-            for (int i = 0; i < p.ReplaceMaterial.Length; i++) {
+            else{
+                brushsize = rand.Next(p.ModifiedBrushSize[0], p.ModifiedBrushSize[1]);
             }
 
             BlockPos pos = new BlockPos(player.Entity.Pos.Dimension);
             pos.X = p.BlockPos.X; pos.Y = p.BlockPos.Y; pos.Z = p.BlockPos.Z;
-            //if (SniperData.ShouldGunpowerderOffset(p.brush)) {
-
-            //    pos = GetGunpowderOffsetPos(pos, p.face);
-            //}
 
             if (p.brush == SniperData.BrushTypes.snipe) {
                 SniperData.SetBlock(bar, p.performer, pos, p.Material, p.ReplaceMaterial, true);
             }
             else if (p.brush == SniperData.BrushTypes.ball) {
                 //double onetime = ((DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds) / 1000;
-                List<BlockPos> ball = Shapes.ball(pos, p.brushsize);
+                List<BlockPos> ball = Shapes.ball(pos, brushsize);
                 // double oneend = ((DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds) / 1000;
                 // SendChatMessage(player, "calculate delay: " + (oneend - onetime).ToString());
 
@@ -87,29 +87,29 @@ namespace VSVoxelSniper {
                 //SendChatMessage(player, "set delay: " + (twoend - twotime).ToString());
             }
             else if (p.brush == SniperData.BrushTypes.voxel) {
-                List<BlockPos> voxel = Shapes.voxel(pos, p.brushsize);
+                List<BlockPos> voxel = Shapes.voxel(pos, brushsize);
                 SniperData.SetBlocks(voxel, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.disk) {
-                List<BlockPos> disk = Shapes.disk(pos, p.brushsize);
+                List<BlockPos> disk = Shapes.disk(pos, brushsize);
                 SniperData.SetBlocks(disk, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.voxeldisk) {
-                List<BlockPos> disk = Shapes.voxeldisk(pos, p.brushsize);
+                List<BlockPos> disk = Shapes.voxeldisk(pos, brushsize);
                 SniperData.SetBlocks(disk, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.diskface) {
-                List<BlockPos> disk = Shapes.disk(pos, p.brushsize);
+                List<BlockPos> disk = Shapes.disk(pos, brushsize);
                 disk = Shapes.face(pos, disk, p.face);
                 SniperData.SetBlocks(disk, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.voxeldiskface) {
-                List<BlockPos> disk = Shapes.voxeldisk(pos, p.brushsize);
+                List<BlockPos> disk = Shapes.voxeldisk(pos, brushsize);
                 disk = Shapes.face(pos, disk, p.face);
                 SniperData.SetBlocks(disk, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.cylinder) {
-                List<BlockPos> cylinder = Shapes.Cylinder(pos, p.VoxelHeight, p.brushsize);
+                List<BlockPos> cylinder = Shapes.Cylinder(pos, p.VoxelHeight, brushsize);
                 SniperData.SetBlocks(cylinder, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.ray) {
@@ -126,64 +126,78 @@ namespace VSVoxelSniper {
                 if (tg == null) {
                     tg = new TreeGeneration();
                 }
-                List<BlockPos> points = Shapes.forest(bar, pos, p.brushsize, p.TreeDensity, p);
+                List<BlockPos> points = Shapes.forest(bar, pos, brushsize, p.TreeDensity, p);
                 foreach (BlockPos point in points) {
                     tg.PlaceTree(p, point, sapi, bar, p.TreeSizeRange, false);
                 }
                 bar.Commit();
             }
             else if (p.brush == SniperData.BrushTypes.filldown) {
-                List<BlockPos> positions = Fill.FillDown(bar, p);
+                List<BlockPos> positions = Fill.FillDown(bar, p, brushsize);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.fillfluid) {
-                List<BlockPos> positions = Fill.FillLiquid(bar, p);
+                List<BlockPos> positions = Fill.FillLiquid(bar, p, brushsize);
                 Fill.PlaceLiquid(bar, positions, p);
             }
             else if (p.brush == SniperData.BrushTypes.heightbrush){
-                List<BlockPos> positions = heightBrush.HeightBrushOperation(pos, p.brushsize, p.VoxelHeight, p.HightBrushMap, bar, player);
-                SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
+                //long start = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                
+                List<BlockPos> positions = heightBrush.HeightBrushOperation(pos, brushsize, p.VoxelHeight, p.HightBrushMap, p.IsModified, bar, player);
+                
+                //long first = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                //Console.WriteLine(first - start);
+                Console.WriteLine(positions.Count);
+                if (p.IsModified){
+                    int[] air = new int[]{ 0 };
+                    SniperData.SetBlocks(positions, bar, p.performer, air);
+                }
+                else{
+                    SniperData.SetBlocks(positions, bar, p.performer, p.Material);
+                }
+                //long second = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                //Console.WriteLine(second - first);
             }
             else if (p.brush == SniperData.BrushTypes.blendball) {
-                Blend.BlendBall(bar, p);
+                Blend.BlendBall(bar, p, brushsize);
             }
             else if (p.brush == SniperData.BrushTypes.blendvoxel) {
-                Blend.BlendVoxel(bar, p);
+                Blend.BlendVoxel(bar, p, brushsize);
             }
             else if (p.brush == SniperData.BrushTypes.blenddisk) {
-                Blend.BlendDisk(bar, p);
+                Blend.BlendDisk(bar, p, brushsize);
             }
             else if (p.brush == SniperData.BrushTypes.blendvoxeldisk) {
-                Blend.BlendVoxelDisk(bar, p);
+                Blend.BlendVoxelDisk(bar, p, brushsize);
             }
             else if (p.brush == SniperData.BrushTypes.splatterball) {
-                List<BlockPos> positions = Splatter.Splatter3d(bar, p, pos, player, true);
+                List<BlockPos> positions = Splatter.Splatter3d(bar, p, brushsize, pos, player, true);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.splattervoxel) {
-                List<BlockPos> positions = Splatter.Splatter3d(bar, p, pos, player);
+                List<BlockPos> positions = Splatter.Splatter3d(bar, p, brushsize, pos, player);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.splatterdisk) {
-                List<BlockPos> positions = Splatter.Splatter2d(bar, p, pos, player, true);
+                List<BlockPos> positions = Splatter.Splatter2d(bar, p, brushsize, pos, player, true);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.splattervoxeldisk) {
-                List<BlockPos> positions = Splatter.Splatter2d(bar, p, pos, player);
+                List<BlockPos> positions = Splatter.Splatter2d(bar, p, brushsize, pos, player);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.splatterdiskface) {
-                List<BlockPos> positions = Splatter.Splatter2d(bar, p, pos, player, true);
+                List<BlockPos> positions = Splatter.Splatter2d(bar, p, brushsize, pos, player, true);
                 positions = Shapes.face(pos, positions, p.face);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.splattervoxeldiskface) {
-                List<BlockPos> positions = Splatter.Splatter2d(bar, p, pos, player);
+                List<BlockPos> positions = Splatter.Splatter2d(bar, p, brushsize, pos, player);
                 positions = Shapes.face(pos, positions, p.face);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.spike) {
-                List<BlockPos> positions = Shapes.Spike(pos, p.PlayerEyePos.ToVec3f().Add(new Vec3f(p.PlayerPos.X, p.PlayerPos.Y, p.PlayerPos.Z)), p.brushsize, p.VoxelHeight);
+                List<BlockPos> positions = Shapes.Spike(pos, p.PlayerEyePos.ToVec3f().Add(new Vec3f(p.PlayerPos.X, p.PlayerPos.Y, p.PlayerPos.Z)), brushsize, p.VoxelHeight);
                 SniperData.SetBlocks(positions, bar, p.performer, p.Material, p.ReplaceMaterial);
             }
             else if (p.brush == SniperData.BrushTypes.clonestamp) {
@@ -195,12 +209,12 @@ namespace VSVoxelSniper {
                         cs.ClearCloneStampQueue(player, sapi);
                     }
                     else {
-                        cs.Clone(bar, sapi, p, player);
+                        cs.Clone(bar, sapi, p, brushsize, player);
                     }
                 }
                 else if (p.tool == SniperData.ToolType.arrow) {
                     if (p.CloneStampForestOption == true) {
-                        List<BlockPos> points = Shapes.forest(bar, pos, p.brushsize, p.CloneStampForestDensity, p);
+                        List<BlockPos> points = Shapes.forest(bar, pos, brushsize, p.CloneStampForestDensity, p);
                         foreach (BlockPos point in points) {
                             cs.Stamp(bar, sapi, p, point, player, false);
                         }
@@ -269,19 +283,19 @@ namespace VSVoxelSniper {
                 }
             }
             else if (p.brush == SniperData.BrushTypes.overlay) {
-                List<BlockPos> blocks = Overlay.DoOverlay(bar, p);
+                List<BlockPos> blocks = Overlay.DoOverlay(bar, p, brushsize);
                 Overlay.OverlaySetBlocks(bar, blocks, p.Material);
             }
             else if (p.brush == SniperData.BrushTypes.splatteroverlay) {
-                List<BlockPos> splatterdisk = Splatter.Splatter2d(bar, p, pos, player, true);
-                List<BlockPos> blocks = Overlay.DoOverlay(bar, p, splatterdisk);
+                List<BlockPos> splatterdisk = Splatter.Splatter2d(bar, p, brushsize, pos, player, true);
+                List<BlockPos> blocks = Overlay.DoOverlay(bar, p, brushsize, splatterdisk);
                 Overlay.OverlaySetBlocks(bar, blocks, p.Material);
             }
             else if (p.brush == SniperData.BrushTypes.erode) {
-                Erosion.Erode(player, p, bar);
+                Erosion.Erode(player, p, brushsize, bar);
             }
             else if (p.brush == SniperData.BrushTypes.drain) {
-                List<BlockPos> ball = Shapes.ball(pos, p.brushsize);
+                List<BlockPos> ball = Shapes.ball(pos, brushsize);
                 SniperData.Drain(ball, bar);
             }
 
