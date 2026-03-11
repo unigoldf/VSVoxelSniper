@@ -527,21 +527,31 @@ namespace VSVoxelSniper{
             else if (arg1.ToLower() == "hb" || arg1.ToLower() == "heightbrush"){
                 if (SniperData.SetActiveBrushType(SniperData.BrushTypes.heightbrush)){
                     if (packet.args.Length > 1){
-                        string arg2 =  packet.args[1];
-                        if (!SetActiveHeightMap(arg2, packet.ValidHeightMaps)){
-                            string ValidMapText = "Valid Maps: ";
-                            foreach (string str in packet.ValidHeightMaps)
-                            {
-                                ValidMapText += " " + str + ",";
+                        string[] args = packet.args;
+                        SniperData.SetHeightBrushInverstionMode(ParseHeightBrushInversionMode(args));
+                        SniperData.SetHeightBrushRotationMode(ParseHeightBrushRotationMode(args));
+                        bool ValidMap = SetActiveHeightMap(args, packet.ValidHeightMaps);
+                        if (!ValidMap){
+                            foreach (string arg in args){
+                                if (arg == "list"){
+                                    string ValidMapText = "Valid Maps: ";
+                                    foreach (string str in packet.ValidHeightMaps){
+                                        ValidMapText += " " + str + ",";
+                                    }
+                                    ValidMapText = ValidMapText.Remove(ValidMapText.Length - 1, 1) + ".";
+                                    capi.ShowChatMessage(Environment.NewLine + ValidMapText);
+                                    return;
+                                }
                             }
-                            ValidMapText = ValidMapText.Remove(ValidMapText.Length -1, 1) + ".";
-                            capi.ShowChatMessage(Environment.NewLine + "Invalid Map." + Environment.NewLine + ValidMapText);
-                            return;
                         }
                     }
                     capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString() + 
+                                         Environment.NewLine + SniperData.HeightBrushMapSetToText + SniperData.GetActiveHeightBrushMapName() + ", " +
+                                         SniperData.HeightBrushInversionModeSetToText + SniperData.GetHeightBrushInversionMode() + ", " +
+                                         SniperData.HeightBrushRotationSetToText + SniperData.GetActiveHeightBrushRotationMode() +
                                          Environment.NewLine + SniperData.VoxelHeightSetToText + SniperData.GetVoxelHeight() +
-                                         Environment.NewLine + SniperData.HeightBrushMapSetToText + " " + SniperData.GetActiveHeightBrushMapName());
+                                         Environment.NewLine + SniperData.GetConfiguredBrushSizeDisplayString());
+                    return;
                 }
             }
             else if (arg1.ToLower() == "ray"){
@@ -903,11 +913,13 @@ namespace VSVoxelSniper{
             }
         }
 
-        private bool SetActiveHeightMap(string arg, string[] mapnames){
-            foreach (string str in mapnames){
-                if (str.ToLower() == arg.ToLower()){
-                    SniperData.SetActiveHeightBrushMap(str);
-                    return true;
+        private bool SetActiveHeightMap(string[] args, string[] mapnames){
+            foreach (string arg in args){
+                foreach (string str in mapnames){
+                    if (str.ToLower() == arg.ToLower()){
+                        SniperData.SetActiveHeightBrushMap(str);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -928,7 +940,6 @@ namespace VSVoxelSniper{
                         break;
                     }
                 }
-
                 if (isvalid){
                     continue;
                 }
@@ -936,11 +947,9 @@ namespace VSVoxelSniper{
                     CurError += ArgsList[i] + " ";
                 }
             }
-
             if (CurError == ErrorPrefix){
                 CurError = "";
             }
-
             return CurError;
         }
 
@@ -985,8 +994,8 @@ namespace VSVoxelSniper{
         private float ParseForestDensity(string[] args){
             for (int i = 0; i < args.Length; i++){
                 if (args[i].ToLower().Contains("d:") || args[i].ToLower().Contains("density:")){
-                    string str = args[i].Replace("density:", "");
-                    str.Replace("d:", "");
+                    string str = args[i].ToLower().Replace("density:", "");
+                    str.ToLower().Replace("d:", "");
                     float density = 1;
                     float.TryParse(str, out density);
                     density = Math.Clamp(density, .01f, 1f);
@@ -995,6 +1004,54 @@ namespace VSVoxelSniper{
             }
 
             return 1f;
+        }
+
+        public bool ParseHeightBrushInversionMode(string[] args){
+            for (int i = 0; i < args.Length; i++){
+                if (args[i].ToLower().Contains("i:") || args[i].ToLower().Contains("invert:")|| args[i].ToLower().Contains("inversion:")){
+                    string str = args[i].ToLower().Replace("inversion:", "");
+                    str = args[i].ToLower().Replace("invert:", "");
+                    str = args[i].ToLower().Replace("i:", "");
+                    if (str == "t" || str == "true" || str == "y" || str == "yes"){
+                        return true;
+                    }
+                    if (str == "f" || str == "false" || str == "n" || str == "no"){
+                        return false;
+                    }
+                }
+            }
+            return SniperData.GetHeightBrushInversionMode();
+        }
+
+        public SniperData.HeightBrushRotationMode ParseHeightBrushRotationMode(string[] args){
+            SniperData.HeightBrushRotationMode result;
+            for (int i = 0; i < args.Length; i++){
+                if (args[i].ToLower().Contains("r:") || args[i].ToLower().Contains("rotate:") || args[i].ToLower().Contains("rotation:")){
+                    string str = args[i].ToLower().Replace("rotation:", "");
+                    str = args[i].ToLower().Replace("rotate:", "");
+                    str = args[i].ToLower().Replace("r:", "");
+                    if (str == "none" || str == "0" || str == "n"){
+                        return SniperData.HeightBrushRotationMode.zero;
+                    }
+                    if (str == "c" || str == "cycle"){
+                        return SniperData.HeightBrushRotationMode.cycle;
+                    }
+                    if (str == "r" || str == "random"){
+                        return SniperData.HeightBrushRotationMode.random;
+                    }
+                    if (str == "90"){
+                        return SniperData.HeightBrushRotationMode.ninety;
+                    }
+                    if (str == "180"){
+                        return SniperData.HeightBrushRotationMode.oneeighty;
+                    }
+                    if (str == "270"){
+                        return SniperData.HeightBrushRotationMode.twoseventy;
+                    }
+                }
+            }
+
+            return SniperData.GetActiveHeightBrushRotationMode();
         }
 
         private void SetSplatterSettings(CommandSendPacket p){

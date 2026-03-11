@@ -172,7 +172,9 @@ namespace VSVoxelSniper {
                 SniperData.GetActiveTreetypes(),
                 SniperData.GetTreeSizeRange(),
                 SniperData.GetTreeDensity(),
-                SniperData.GetActiveHeightBrushMapName()
+                SniperData.GetActiveHeightBrushMapName(),
+                SniperData.GetHeightBrushInversionMode(),
+                SniperData.GetActiveHeightBrushRotationMode()
                 );
             clientChannel.SendPacket(p);
         }
@@ -327,6 +329,8 @@ namespace VSVoxelSniper {
         public List<String> TreeTypes;
         public Vec2f TreeSizeRange;
         public float TreeDensity;
-        public string HightBrushMap;
+        public string HeightBrushMap;
+        public bool HeightBrushInversion;
+        public SniperData.HeightBrushRotationMode HeightBrushRotationMode;
     }
 }

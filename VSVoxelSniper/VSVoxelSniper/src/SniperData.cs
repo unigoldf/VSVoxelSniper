@@ -29,6 +29,8 @@ namespace VSVoxelSniper {
         public const string CloneStampForestModeSetToText = "Forest Mode: ";
         public const string CloneStampForestDensitySetToText = "Forest Density: ";
         public const string HeightBrushMapSetToText =  "Height Map set to: ";
+        public const string HeightBrushRotationSetToText = "Rotation: ";
+        public const string HeightBrushInversionModeSetToText = "Invert: ";
         #endregion
 
         #region BrushAndToolTypes
@@ -451,8 +453,8 @@ namespace VSVoxelSniper {
 
         public static void SetUnmodifiedBrushSize(int Min, int Max) {
 
-            Min = Math.Clamp(Min, 0, 150);
-            Max = Math.Clamp(Max, 0, 150);
+            Min = Math.Clamp(Min, 0, 300);
+            Max = Math.Clamp(Max, 0, 300);
 
             UnmodifiedBrushSize[0] = Min;
             if (Max == 0) {
@@ -465,8 +467,8 @@ namespace VSVoxelSniper {
 
         public static void SetModifiedBrushSize(int Min, int Max) {
 
-            Min = Math.Clamp(Min, 0, 150);
-            Max = Math.Clamp(Max, 0, 150);
+            Min = Math.Clamp(Min, 0, 300);
+            Max = Math.Clamp(Max, 0, 300);
 
             ModifiedBrushSize[0] = Min;
             if (Max == 0) {
@@ -551,12 +553,35 @@ namespace VSVoxelSniper {
         #region HeightBrush
 
         private static string ActiveHeightBrushMapName = "mountain";
+        private static bool HeightBrushIversionMode = false;
+        private static HeightBrushRotationMode ActiveHeightBrushRotationMode = HeightBrushRotationMode.zero;
+        public enum HeightBrushRotationMode{
+            random,
+            cycle,
+            zero,
+            ninety,
+            oneeighty,
+            twoseventy
+        }
 
         public static void SetActiveHeightBrushMap(string name){
             ActiveHeightBrushMapName = name;
         }
         public static string GetActiveHeightBrushMapName() {
             return ActiveHeightBrushMapName;
+        }
+        public static void SetHeightBrushInverstionMode(bool enabled){
+            HeightBrushIversionMode = enabled;
+        }
+        public static bool GetHeightBrushInversionMode(){
+            return HeightBrushIversionMode;
+        }
+        public static void SetHeightBrushRotationMode(HeightBrushRotationMode mode){
+            ActiveHeightBrushRotationMode = mode;
+        }
+
+        public static HeightBrushRotationMode GetActiveHeightBrushRotationMode(){
+            return ActiveHeightBrushRotationMode;
         }
         
         #endregion
@@ -622,7 +647,7 @@ namespace VSVoxelSniper {
             FaceDirection face, BrushTypes brush, int[] UnModifiedBrushsize, int[] ModifiedBrushSize, bool IsModified, PerformerTypes performer, ErosionTypes erosionpreset, int OverlayDebth, SniperData.OverlayPerformers OverlayPerformer,
             int SplatterSeed, int SplatterGrowth, int SplatterRecursions, int VoxelHeight, int VoxelDebth, int VoxelCentroid, SniperData.CloneStampModes CloneStampMode, CloneStampQueueModes CloneStampQueueMode,
             CloneStampRotationModes cloneStampRotationMode, bool CloneStampForestOption, float CloneStampForestDensity, List<string> TreeTypes, Vec2f TreeSizeRange, float TreeDensity,
-            string HeightBrushMap) {
+            string HeightBrushMap, bool HeightBrushInversionMode, HeightBrushRotationMode heightBrushRotationMode) {
 
             int[] mats = ConvertBlockListToArray(Material);
             int[] rmats = ConvertBlockListToArray(ReplaceMaterial);
@@ -657,7 +682,9 @@ namespace VSVoxelSniper {
             packet.TreeTypes = TreeTypes;
             packet.TreeSizeRange = TreeSizeRange;
             packet.TreeDensity = TreeDensity;
-            packet.HightBrushMap = HeightBrushMap;
+            packet.HeightBrushMap = HeightBrushMap;
+            packet.HeightBrushInversion = HeightBrushInversionMode;
+            packet.HeightBrushRotationMode = heightBrushRotationMode;
             return packet;
         }
 

@@ -21,6 +21,7 @@ namespace VSVoxelSniper {
         CloneStamp cs;
         TreeGeneration tg;
         public HeightBrush heightBrush;
+        private int LastHeightBrushRotation = 0;
 
         public List<BlockPos> GunpowderHistory = new List<BlockPos>();
         public List<BlockPos> ArrowHistory = new List<BlockPos>();
@@ -31,7 +32,7 @@ namespace VSVoxelSniper {
             }
 
             if (bar.CurrentHistoryState == bar.AvailableHistoryStates) {
-                return "Undo Failed. Cannot revert any further.";
+                return "Undo Failed. Cannot revert further.";
             }
             int CurState = bar.CurrentHistoryState;
 
@@ -141,22 +142,15 @@ namespace VSVoxelSniper {
                 Fill.PlaceLiquid(bar, positions, p);
             }
             else if (p.brush == SniperData.BrushTypes.heightbrush){
-                //long start = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-                
-                List<BlockPos> positions = heightBrush.HeightBrushOperation(pos, brushsize, p.VoxelHeight, p.HightBrushMap, p.IsModified, bar, player);
-                
-                //long first = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-                //Console.WriteLine(first - start);
-                Console.WriteLine(positions.Count);
-                if (p.IsModified){
-                    int[] air = new int[]{ 0 };
-                    SniperData.SetBlocks(positions, bar, p.performer, air);
+                List<BlockPos> positions = heightBrush.HeightBrushOperation(pos, brushsize, p.VoxelHeight, ref LastHeightBrushRotation, p, bar, player);
+                if (positions.Count == 0){return;}
+                int[] air = new int[]{ 0 };
+                if (p.HeightBrushInversion){
+                    SniperData.SetBlocks(positions, bar, SniperData.PerformerTypes.Material, air);
                 }
                 else{
-                    SniperData.SetBlocks(positions, bar, p.performer, p.Material);
+                    SniperData.SetBlocks(positions, bar, SniperData.PerformerTypes.MaterialReplace, p.Material, air);
                 }
-                //long second = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-                //Console.WriteLine(second - first);
             }
             else if (p.brush == SniperData.BrushTypes.blendball) {
                 Blend.BlendBall(bar, p, brushsize);

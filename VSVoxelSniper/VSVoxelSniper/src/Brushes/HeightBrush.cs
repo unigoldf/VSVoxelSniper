@@ -23,12 +23,13 @@ public class HeightBrush{
 
     private List<vsvsbitmap> maps = new List<vsvsbitmap>();
 
-    public List<BlockPos> HeightBrushOperation(BlockPos pos, int radius, float maxheight, string mapnane, bool IsModified, IBlockAccessorRevertable bar, IPlayer player){
+    public List<BlockPos> HeightBrushOperation(BlockPos pos, int radius, float maxheight, ref int lastrotation, BrushDataPacket p, IBlockAccessorRevertable bar, IPlayer player){
         List<BlockPos> points = new List<BlockPos>();
         if (maps.Count == 0){ return points; }
-        vsvsbitmap map = GetMapFromName(mapnane, player);
+        vsvsbitmap map = GetMapFromName(p.HeightBrushMap, player);
         if (map == null){ return points; }
-        map.Rotate(90);
+        int randomrotation = 0;
+        RotateMap(ref map, ref lastrotation, ref randomrotation, p.HeightBrushRotationMode);
         float xiteration = 0;
         float zinteration = 0;
         for (int x = pos.X - radius; x < pos.X + radius + 1; x++){
@@ -37,27 +38,98 @@ public class HeightBrush{
                 int yheight = (int)(whitevalue * maxheight);
                 BlockPos curpos = new BlockPos(x, pos.Y, z, pos.dimension);
                 int startpos = GetBase(curpos, radius, bar);
-                if (!IsModified){
+                if (!p.HeightBrushInversion){
                     for (int y = startpos + 1; y < startpos + yheight; y++){
                         points.Add(new BlockPos(x, y, z));
                     }
                 }
                 else{
-                    Console.WriteLine(startpos + " " + yheight);
                     for (int y = startpos; y > startpos - yheight; y--){
                         points.Add(new BlockPos(x, y, z));
                     }
                 }
-
                 zinteration++;
             }
             zinteration = 0;
             xiteration++;
         }
-
+        ReturnMap(ref map, ref lastrotation, randomrotation, p.HeightBrushRotationMode);
         return points;
     }
 
+    public void RotateMap(ref vsvsbitmap map, ref int lastrotation, ref int randomrotation, SniperData.HeightBrushRotationMode mode){
+        if (mode == SniperData.HeightBrushRotationMode.cycle){
+            if (lastrotation == 0){
+                map.Rotate(90);
+            }
+            else if (lastrotation == 90){
+                map.Rotate(90);
+                map.Rotate(90);
+            }
+            else if (lastrotation == 180){
+                map.Rotate(90);
+                map.Rotate(90);
+                map.Rotate(90);
+            }
+        }
+        else if (mode == SniperData.HeightBrushRotationMode.random){
+            Random rand = new Random();
+            randomrotation = rand.Next(0, 4);
+            for (int r = 0; r < randomrotation; r++){
+                map.Rotate(90);
+            }
+        }
+        else if (mode == SniperData.HeightBrushRotationMode.ninety){
+            map.Rotate(90);
+        }
+        else if (mode == SniperData.HeightBrushRotationMode.oneeighty){
+            map.Rotate(90);
+            map.Rotate(90);
+        }
+        else if (mode == SniperData.HeightBrushRotationMode.twoseventy){
+            map.Rotate(90);
+            map.Rotate(90);
+            map.Rotate(90);
+        }
+    }
+    public void ReturnMap(ref vsvsbitmap map, ref int lastrotation, int randomrotation, SniperData.HeightBrushRotationMode mode){
+        if (mode == SniperData.HeightBrushRotationMode.cycle){
+            if (lastrotation == 0){
+                map.Rotate(90);
+                map.Rotate(90);
+                map.Rotate(90);
+            }
+            else if (lastrotation == 90){
+                map.Rotate(90);
+                map.Rotate(90);
+            }
+            else if (lastrotation == 180){
+                map.Rotate(90);
+            }
+            lastrotation += 90;
+            if (lastrotation == 360){
+                lastrotation = 0;
+            }
+        }
+        else if (mode == SniperData.HeightBrushRotationMode.random){
+            for (int r = 0; r < 4 - randomrotation; r++){
+                map.Rotate(90);
+            }
+        }
+        else if (mode == SniperData.HeightBrushRotationMode.ninety){
+            map.Rotate(90);
+            map.Rotate(90);
+            map.Rotate(90);
+        }
+        else if (mode == SniperData.HeightBrushRotationMode.oneeighty){
+            map.Rotate(90);
+            map.Rotate(90);
+        }
+        else if (mode == SniperData.HeightBrushRotationMode.twoseventy){
+            map.Rotate(90);
+        }
+    }
+    
     private float GetWhiteValueOnMap(float x, float z, int size, vsvsbitmap map, IPlayer player){
         float value = 0;
         int xpos = (int)((x / size) * map.Width + (map.Width / size * 2));
@@ -224,8 +296,8 @@ public class HeightBrush{
         }
         private static SKBitmap SKRotate(SKBitmap map, int angle)
         {
-            var rotated = new SKBitmap(map.Height, map.Width);
-            using (var surface = new SKCanvas(rotated))
+            SKBitmap rotated = new SKBitmap(map.Height, map.Width);
+            using (SKCanvas surface = new SKCanvas(rotated))
             {
                 surface.Translate(rotated.Width, 0);
                 surface.RotateDegrees(angle);
