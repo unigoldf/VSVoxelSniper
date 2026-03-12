@@ -38,13 +38,13 @@ public class HeightBrush{
                 int yheight = (int)(whitevalue * maxheight);
                 BlockPos curpos = new BlockPos(x, pos.Y, z, pos.dimension);
                 int startpos = GetBase(curpos, radius, bar);
-                if (!p.HeightBrushInversion){
-                    for (int y = startpos + 1; y < startpos + yheight; y++){
+                if (p.HeightBrushInversion){
+                    for (int y = startpos; y > startpos - yheight; y--){
                         points.Add(new BlockPos(x, y, z));
                     }
                 }
                 else{
-                    for (int y = startpos; y > startpos - yheight; y--){
+                    for (int y = startpos + 1; y < startpos + yheight; y++){
                         points.Add(new BlockPos(x, y, z));
                     }
                 }
@@ -57,6 +57,8 @@ public class HeightBrush{
         return points;
     }
 
+    
+    //this rotate implementation is ass but fuk it lmao
     public void RotateMap(ref vsvsbitmap map, ref int lastrotation, ref int randomrotation, SniperData.HeightBrushRotationMode mode){
         if (mode == SniperData.HeightBrushRotationMode.cycle){
             if (lastrotation == 0){

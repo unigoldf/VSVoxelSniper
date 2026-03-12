@@ -142,14 +142,25 @@ namespace VSVoxelSniper {
                 Fill.PlaceLiquid(bar, positions, p);
             }
             else if (p.brush == SniperData.BrushTypes.heightbrush){
-                List<BlockPos> positions = heightBrush.HeightBrushOperation(pos, brushsize, p.VoxelHeight, ref LastHeightBrushRotation, p, bar, player);
-                if (positions.Count == 0){return;}
-                int[] air = new int[]{ 0 };
-                if (p.HeightBrushInversion){
-                    SniperData.SetBlocks(positions, bar, SniperData.PerformerTypes.Material, air);
+                if (p.tool == SniperData.ToolType.gunpowder){
+                    List<BlockPos> positions = Shapes.ball(pos, brushsize);
+                    SniperData.SetBlocks(positions, bar, SniperData.PerformerTypes.Override, p.Material, p.ReplaceMaterial);
                 }
                 else{
-                    SniperData.SetBlocks(positions, bar, SniperData.PerformerTypes.MaterialReplace, p.Material, air);
+                    List<BlockPos> positions = heightBrush.HeightBrushOperation(pos, brushsize, p.VoxelHeight,
+                        ref LastHeightBrushRotation, p, bar, player);
+                    if (positions.Count == 0){
+                        return;
+                    }
+
+                    int[] air = new int[]{ 0 };
+                    if (p.HeightBrushInversion){
+                        SniperData.SetBlocks(positions, bar, SniperData.PerformerTypes.Material, air);
+                    }
+                    else{
+                        SniperData.SetBlocks(positions, bar, SniperData.PerformerTypes.MaterialReplace, p.Material,
+                            air);
+                    }
                 }
             }
             else if (p.brush == SniperData.BrushTypes.blendball) {

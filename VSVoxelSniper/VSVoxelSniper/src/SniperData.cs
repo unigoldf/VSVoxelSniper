@@ -77,7 +77,8 @@ namespace VSVoxelSniper {
             BrushTypes.line,
             BrushTypes.ray,
             BrushTypes.set,
-            BrushTypes.clonestamp
+            BrushTypes.clonestamp,
+            BrushTypes.heightbrush
         };
 
         public enum ErosionTypes {
