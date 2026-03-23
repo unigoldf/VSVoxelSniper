@@ -19,7 +19,7 @@ namespace VSVoxelSniper {
         ICoreAPI api;
 
         private List<ServerSideUserWorkspace> Spaces = new();
-        GameTickListener tickListener;
+        //GameTickListener tickListener;
 
         IServerNetworkChannel serverChannel;
         IClientNetworkChannel clientChannel;
@@ -97,7 +97,7 @@ namespace VSVoxelSniper {
             wa.RayTraceForSelection(pos, LocalPlayer.Entity.Pos.Pitch, LocalPlayer.Entity.Pos.Yaw, UserSettings.GetRange(), ref bs, ref es);
             wa.ForceLiquidSelectable = OriState;
 
-            BlockPos TargetBlock = new BlockPos();
+            BlockPos TargetBlock = new BlockPos(LocalPlayer.Entity.Pos.Dimension);
             BlockFacing TargetFace = BlockFacing.UP;
 
             if (bs == null) {
@@ -173,7 +173,7 @@ namespace VSVoxelSniper {
                 SniperData.GetTreeSizeRange(),
                 SniperData.GetTreeDensity(),
                 SniperData.GetActiveHeightBrushMapName(),
-                SniperData.GetHeightBrushInversionMode(),
+                SniperData.GetActiveHeightBrushMode(),
                 SniperData.GetActiveHeightBrushRotationMode()
                 );
             clientChannel.SendPacket(p);
@@ -330,7 +330,7 @@ namespace VSVoxelSniper {
         public Vec2f TreeSizeRange;
         public float TreeDensity;
         public string HeightBrushMap;
-        public bool HeightBrushInversion;
+        public SniperData.HeightBrushModes HeightBrushMode;
         public SniperData.HeightBrushRotationMode HeightBrushRotationMode;
     }
 }

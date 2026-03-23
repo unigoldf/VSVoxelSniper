@@ -65,7 +65,7 @@ namespace VSVoxelSniper.Brushes {
                         if (block.ForFluidsLayer || block.BlockId == 0) { continue; }
 
                         int NonSolidNeighbors = 0;
-                        BlockPos NeighborPos = new BlockPos();
+                        BlockPos NeighborPos = new BlockPos(player.Entity.Pos.Dimension);
 
                         for (int i = 0; i < BlockOffsets.Length; i++) {
                             Vec3i nvec = new Vec3i(pos.X + BlockOffsets[i].X, pos.Y + BlockOffsets[i].Y, pos.Z + BlockOffsets[i].Z);

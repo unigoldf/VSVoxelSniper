@@ -122,7 +122,7 @@ namespace VSVoxelSniper.Brushes {
 
             Random random = new Random();
 
-            int y = 0;
+            //int y = 0;
 
             for (int x = 0; x < splat.GetLength(0); x++) {
                 //for (int y = 0; y < splat.GetLength(1); y++) {

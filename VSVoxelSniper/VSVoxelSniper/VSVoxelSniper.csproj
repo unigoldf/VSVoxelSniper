@@ -18,6 +18,7 @@
     </Reference>
     <Reference Include="CairoSharp">
       <HintPath>..\..\..\..\..\.local\share\vintagestory\Lib\CairoSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\..\..\..\..\.local\share\vintagestory\Lib\protobuf-net.dll</HintPath>
@@ -25,6 +26,7 @@
     </Reference>
     <Reference Include="SkiaSharp">
       <HintPath>..\..\..\..\..\.local\share\vintagestory\Lib\SkiaSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Vintagestory">
       <HintPath>..\..\..\..\..\.local\share\vintagestory\Vintagestory.dll</HintPath>

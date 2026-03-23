@@ -154,7 +154,7 @@ namespace VSVoxelSniper {
                     }
 
                     int[] air = new int[]{ 0 };
-                    if (p.HeightBrushInversion){
+                    if (p.HeightBrushMode == SniperData.HeightBrushModes.invert){
                         SniperData.SetBlocks(positions, bar, SniperData.PerformerTypes.Material, air);
                     }
                     else{
@@ -303,9 +303,38 @@ namespace VSVoxelSniper {
                 List<BlockPos> ball = Shapes.ball(pos, brushsize);
                 SniperData.Drain(ball, bar);
             }
-
-
-
+            else if (p.brush == SniperData.BrushTypes.entityremoval){
+                Entities en = new Entities();
+                int count = en.RemoveEntities(sapi, p, brushsize);
+                SendChatMessage(player, "Removed " + count + " entities.");
+            }
+            else if (p.brush == SniperData.BrushTypes.ruler) {
+                if (p.tool == SniperData.ToolType.arrow){
+                    if (GunpowderHistory.Count > 0) {
+                        ArrowHistory.Clear();
+                        double dist = 0;
+                        if (p.IsModified) {
+                            ArrowHistory.Add(new BlockPos(p.PlayerPos.X, p.PlayerPos.Y, p.PlayerPos.Z));
+                            dist = Shapes.Vec3iDistance(GunpowderHistory[0].AsVec3i, p.PlayerPos);
+                        }
+                        else {
+                            ArrowHistory.Add(new BlockPos(p.BlockPos.X, p.BlockPos.Y, p.BlockPos.Z));
+                            dist = Shapes.Vec3iDistance(GunpowderHistory[0].AsVec3i, p.BlockPos.AsVec3i);
+                        }
+                        SendChatMessage(player, "Distance is " + dist + " Blocks.");
+                    } 
+                }
+                if (p.tool == SniperData.ToolType.gunpowder){
+                    GunpowderHistory.Clear();
+                    if (p.IsModified) {
+                        GunpowderHistory.Add(new BlockPos(p.PlayerPos.X, p.PlayerPos.Y, p.PlayerPos.Z));
+                    }
+                    else {
+                        GunpowderHistory.Add(new BlockPos(p.BlockPos.X, p.BlockPos.Y, p.BlockPos.Z));
+                    }
+                    SendChatMessage(player, "First Point Set.");
+                }
+            }
             else if (p.brush == SniperData.BrushTypes.teleport) {
                 player.Entity.TeleportTo(p.BlockPos.X, p.BlockPos.Y + 1, p.BlockPos.Z);
             }

@@ -6,11 +6,6 @@ using Vintagestory.API.Server;
 using System.IO.Compression;
 using SkiaSharp;
 using Vintagestory.API.MathTools;
-using Cairo;
-using SkiaSharp;
-using System;
-using System.IO;
-using Vintagestory.API.Client;
 using Vintagestory.API.Util;
 using Path = System.IO.Path;
 
@@ -21,12 +16,12 @@ public class HeightBrush{
     public ICoreServerAPI sapi;
     string foldername = "HeightMaps";
 
-    private List<vsvsbitmap> maps = new List<vsvsbitmap>();
+    private List<vsvsBitmap> maps = new List<vsvsBitmap>();
 
     public List<BlockPos> HeightBrushOperation(BlockPos pos, int radius, float maxheight, ref int lastrotation, BrushDataPacket p, IBlockAccessorRevertable bar, IPlayer player){
         List<BlockPos> points = new List<BlockPos>();
         if (maps.Count == 0){ return points; }
-        vsvsbitmap map = GetMapFromName(p.HeightBrushMap, player);
+        vsvsBitmap map = GetMapFromName(p.HeightBrushMap, player);
         if (map == null){ return points; }
         int randomrotation = 0;
         RotateMap(ref map, ref lastrotation, ref randomrotation, p.HeightBrushRotationMode);
@@ -37,14 +32,17 @@ public class HeightBrush{
                 float whitevalue = GetWhiteValueOnMap(xiteration, zinteration, radius * 2 + 2, map, player);
                 int yheight = (int)(whitevalue * maxheight);
                 BlockPos curpos = new BlockPos(x, pos.Y, z, pos.dimension);
-                int startpos = GetBase(curpos, radius, bar);
-                if (p.HeightBrushInversion){
+                int startpos = GetBase(curpos, bar);
+                if (p.HeightBrushMode == SniperData.HeightBrushModes.invert){
                     for (int y = startpos; y > startpos - yheight; y--){
                         points.Add(new BlockPos(x, y, z));
                     }
                 }
                 else{
                     for (int y = startpos + 1; y < startpos + yheight; y++){
+                        if (p.HeightBrushMode == SniperData.HeightBrushModes.flatten && y > pos.Y){
+                            break;
+                        }
                         points.Add(new BlockPos(x, y, z));
                     }
                 }
@@ -58,8 +56,98 @@ public class HeightBrush{
     }
 
     
+
+    
+    private float GetWhiteValueOnMap(float x, float z, int size, vsvsBitmap map, IPlayer player){
+        float value = 0;
+        int xpos = (int)((x / size) * map.Width + (map.Width / size * 2));
+        int zpos = (int)((z / size) * map.Height + (map.Height / size * 2));
+        SKColor color = map.GetPixel(xpos, zpos);
+        value = (color.Blue + color.Green + color.Red) * .33333f * .00392f;
+        return value;
+    }
+
+    private int GetBase(BlockPos pos, IBlockAccessorRevertable bar){
+        if (bar.GetBlock(pos).BlockId == 0){
+            for (int y = pos.Y - 1; y > 0; y--){
+                BlockPos temppos = new BlockPos(pos.X, y, pos.Z, pos.dimension);
+                Block b = bar.GetBlock(temppos, BlockLayersAccess.Solid);
+                if (b.BlockId != 0){
+                    return y;
+                }
+            }
+        }
+        else{
+            for (int y = pos.Y; y < bar.MapSizeY; y++ /*&& mode isn't flatten'*/){
+                BlockPos temppos = new BlockPos(pos.X, y, pos.Z, pos.dimension);
+                Block b = bar.GetBlock(temppos, BlockLayersAccess.Solid);
+                if (b.BlockId == 0){
+                    return y - 1;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    public void ExtractHeightMaps(string ConfigFolderPath){
+        string mappath = Path.Combine(ConfigFolderPath, foldername);
+        if (!Directory.Exists(mappath)){
+            Directory.CreateDirectory(mappath);
+        }
+
+        string modpath = sapi.ModLoader.GetMod("vsvoxelsniper").SourcePath;
+        ZipArchive zip = ZipFile.OpenRead(modpath);
+        foreach (ZipArchiveEntry entry in zip.Entries){
+            if (entry.FullName.StartsWith(foldername) && !entry.FullName.EndsWith("/")){
+                string finalname = Path.Combine(mappath, entry.Name);
+                if (!File.Exists(finalname)){
+                    entry.ExtractToFile(finalname);
+                }
+            }
+        }
+    }
+
+    public void LoadHeightMaps(string ConfigFolderPath){
+        maps.Clear();
+        String HeightMapPath = Path.Combine(ConfigFolderPath, foldername);
+        foreach (string file in Directory.EnumerateFiles(HeightMapPath)){
+            if (File.Exists(file)){
+                try{
+                    maps.Add(new vsvsBitmap(file));
+                }
+                catch (Exception ex){
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+        }
+        Console.WriteLine($"VSVoxelsniper Loaded {maps.Count} maps.");
+    }
+
+    public String[] GetHeightMaps(){
+        String[] heightmapnames = new String[maps.Count];
+        for (int i = 0; i < maps.Count; i++){
+            heightmapnames[i] = maps[i].name;
+        }
+        return heightmapnames;
+    }
+
+    public vsvsBitmap GetMapFromName(string name, IPlayer player){
+        foreach (vsvsBitmap map in maps){
+            if (name.ToLower() == map.name.ToLower()){
+                return map;
+            }
+        }
+        return null;
+    }
+
+    private void SendChatMessage(IPlayer player, string text){
+        TextMessage message = new TextMessage();
+        message.text = text;
+        sapi.Network.GetChannel("VintageStoryVoxelSniper").SendPacket(message, (IServerPlayer)player);
+    }
     //this rotate implementation is ass but fuk it lmao
-    public void RotateMap(ref vsvsbitmap map, ref int lastrotation, ref int randomrotation, SniperData.HeightBrushRotationMode mode){
+    public void RotateMap(ref vsvsBitmap map, ref int lastrotation, ref int randomrotation, SniperData.HeightBrushRotationMode mode){
         if (mode == SniperData.HeightBrushRotationMode.cycle){
             if (lastrotation == 0){
                 map.Rotate(90);
@@ -94,7 +182,7 @@ public class HeightBrush{
             map.Rotate(90);
         }
     }
-    public void ReturnMap(ref vsvsbitmap map, ref int lastrotation, int randomrotation, SniperData.HeightBrushRotationMode mode){
+    public void ReturnMap(ref vsvsBitmap map, ref int lastrotation, int randomrotation, SniperData.HeightBrushRotationMode mode){
         if (mode == SniperData.HeightBrushRotationMode.cycle){
             if (lastrotation == 0){
                 map.Rotate(90);
@@ -131,100 +219,10 @@ public class HeightBrush{
             map.Rotate(90);
         }
     }
-    
-    private float GetWhiteValueOnMap(float x, float z, int size, vsvsbitmap map, IPlayer player){
-        float value = 0;
-        int xpos = (int)((x / size) * map.Width + (map.Width / size * 2));
-        int zpos = (int)((z / size) * map.Height + (map.Height / size * 2));
-        SKColor color = map.GetPixel(xpos, zpos);
-        value = (color.Blue + color.Green + color.Red) * .33333f * .00392f;
-        return value;
-    }
-
-    private int GetBase(BlockPos pos, int brushsize, IBlockAccessorRevertable bar){
-        if (bar.GetBlock(pos).BlockId == 0){
-            for (int y = pos.Y - 1; y > 0; y--){
-                BlockPos temppos = new BlockPos(pos.X, y, pos.Z, pos.dimension);
-                Block b = bar.GetBlock(temppos, BlockLayersAccess.Solid);
-                if (b.BlockId != 0){
-                    return y;
-                }
-            }
-        }
-        else{
-            for (int y = pos.Y; y < bar.MapSizeY; y++){
-                BlockPos temppos = new BlockPos(pos.X, y, pos.Z, pos.dimension);
-                Block b = bar.GetBlock(temppos, BlockLayersAccess.Solid);
-                if (b.BlockId == 0){
-                    return y - 1;
-                }
-            }
-        }
-
-        return 0;
-    }
-
-    public void ExtractHeightMaps(string ConfigFolderPath){
-        string mappath = Path.Combine(ConfigFolderPath, foldername);
-        if (!Directory.Exists(mappath)){
-            Directory.CreateDirectory(mappath);
-        }
-
-        string modpath = sapi.ModLoader.GetMod("vsvoxelsniper").SourcePath;
-        ZipArchive zip = ZipFile.OpenRead(modpath);
-        foreach (ZipArchiveEntry entry in zip.Entries){
-            if (entry.FullName.StartsWith(foldername) && !entry.FullName.EndsWith("/")){
-                string finalname = Path.Combine(mappath, entry.Name);
-                if (!File.Exists(finalname)){
-                    entry.ExtractToFile(finalname);
-                }
-            }
-        }
-    }
-
-    public void LoadHeightMaps(string ConfigFolderPath){
-        maps.Clear();
-        String HeightMapPath = Path.Combine(ConfigFolderPath, foldername);
-        foreach (string file in Directory.EnumerateFiles(HeightMapPath)){
-            if (File.Exists(file)){
-                try{
-                    maps.Add(new vsvsbitmap(file));
-                }
-                catch (Exception ex){
-                    Console.WriteLine(ex.ToString());
-                }
-            }
-        }
-        Console.WriteLine($"VSVoxelsniper Loaded {maps.Count} maps.");
-    }
-
-    public String[] GetHeightMaps(){
-        String[] heightmapnames = new String[maps.Count];
-        for (int i = 0; i < maps.Count; i++){
-            heightmapnames[i] = maps[i].name;
-        }
-        return heightmapnames;
-    }
-
-    public vsvsbitmap GetMapFromName(string name, IPlayer player){
-        foreach (vsvsbitmap map in maps){
-            if (name.ToLower() == map.name.ToLower()){
-                return map;
-            }
-        }
-        return null;
-    }
-
-    private void SendChatMessage(IPlayer player, string text){
-        TextMessage message = new TextMessage();
-        message.text = text;
-        sapi.Network.GetChannel("VintageStoryVoxelSniper").SendPacket(message, (IServerPlayer)player);
-    }
-
 
     #region custom bitmap class
     
-    public class vsvsbitmap : BitmapRef{
+    public class vsvsBitmap : BitmapRef{
         public SKBitmap bmp;
         public string name;
         public override int Height => bmp.Height;
@@ -232,7 +230,8 @@ public class HeightBrush{
         public override int[] Pixels => Array.ConvertAll(bmp.Pixels, p => (int)(uint)p);
         public IntPtr PixelsPtrAndLock => bmp.GetPixels();
 
-        public vsvsbitmap(string filePath, ILogger? logger = null){
+        #nullable enable
+        public vsvsBitmap(string filePath, ILogger? logger = null){
             try{
                 bmp = Decode(File.ReadAllBytes(filePath));
                 name = Path.GetFileNameWithoutExtension(filePath);

@@ -528,10 +528,11 @@ namespace VSVoxelSniper{
                 if (SniperData.SetActiveBrushType(SniperData.BrushTypes.heightbrush)){
                     if (packet.args.Length > 1){
                         string[] args = packet.args;
-                        SniperData.SetHeightBrushInverstionMode(ParseHeightBrushInversionMode(args));
+                        SniperData.SetActiveHeightBrushMode(ParseHeightBrushMode(args));
                         SniperData.SetHeightBrushRotationMode(ParseHeightBrushRotationMode(args));
                         bool ValidMap = SetActiveHeightMap(args, packet.ValidHeightMaps);
                         if (!ValidMap){
+                            packet.ValidHeightMaps.Sort();
                             foreach (string arg in args){
                                 if (arg == "list"){
                                     string ValidMapText = "Valid Maps: ";
@@ -547,7 +548,7 @@ namespace VSVoxelSniper{
                     }
                     capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString() + 
                                          Environment.NewLine + SniperData.HeightBrushMapSetToText + SniperData.GetActiveHeightBrushMapName() + ", " +
-                                         SniperData.HeightBrushInversionModeSetToText + SniperData.GetHeightBrushInversionMode() + ", " +
+                                         SniperData.HeightBrushModeSetToText + SniperData.GetActiveHeightBrushMode() + ", " +
                                          SniperData.HeightBrushRotationSetToText + SniperData.GetActiveHeightBrushRotationMode() +
                                          Environment.NewLine + SniperData.VoxelHeightSetToText + SniperData.GetVoxelHeight() +
                                          Environment.NewLine + SniperData.GetConfiguredBrushSizeDisplayString());
@@ -791,12 +792,18 @@ namespace VSVoxelSniper{
                 }
                 return;
             }
-            //else if (arg1.ToLower() == "en" || arg1.ToLower() == "entity") {
-            //    if (SniperData.SetActiveBrushType(SniperData.BrushTypes.entity)) {
-            //        capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString());
-            //    }
-            //    return;
-            //}
+            else if (arg1.ToLower() == "er" || arg1.ToLower() == "entityremoval") {
+                if (SniperData.SetActiveBrushType(SniperData.BrushTypes.entityremoval)) {
+                    capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString());
+                }
+                return;
+            }
+            else if (arg1.ToLower() == "ruler") {
+                if (SniperData.SetActiveBrushType(SniperData.BrushTypes.ruler)) {
+                    capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText + SniperData.GetActiveBrushType().ToString());
+                }
+                return;
+            }
             else if (arg1.ToLower() == "bb" || arg1.ToLower() == "blendball"){
                 if (SniperData.SetActiveBrushType(SniperData.BrushTypes.blendball)){
                     capi.ShowChatMessage(Environment.NewLine + SniperData.BrushSetToText +
@@ -966,7 +973,7 @@ namespace VSVoxelSniper{
             for (int i = 0; i < args.Length; i++){
                 if (args[i].ToLower().Contains("s:") || args[i].ToLower().Contains("size:")){
                     string str = args[i].Replace("size:", "");
-                    str.Replace("s:", "");
+                    str = str.Replace("s:", "");
                     if (str.Contains("-")){
                         string[] strs = str.Split("-");
                         if (strs.Length != 2){
@@ -992,10 +999,10 @@ namespace VSVoxelSniper{
         }
 
         private float ParseForestDensity(string[] args){
-            for (int i = 0; i < args.Length; i++){
-                if (args[i].ToLower().Contains("d:") || args[i].ToLower().Contains("density:")){
-                    string str = args[i].ToLower().Replace("density:", "");
-                    str.ToLower().Replace("d:", "");
+            foreach (string arg in args){
+                if (arg.ToLower().StartsWith("d:") || arg.ToLower().StartsWith("density:")){
+                    string str = arg.ToLower().Replace("density:", "");
+                    str = str.ToLower().Replace("d:", "");
                     float density = 1;
                     float.TryParse(str, out density);
                     density = Math.Clamp(density, .01f, 1f);
@@ -1003,28 +1010,29 @@ namespace VSVoxelSniper{
                 }
             }
 
-            return 1f;
+            return SniperData.GetTreeDensity();
         }
 
-        public bool ParseHeightBrushInversionMode(string[] args){
+        public SniperData.HeightBrushModes ParseHeightBrushMode(string[] args){
             for (int i = 0; i < args.Length; i++){
-                if (args[i].ToLower().Contains("i:") || args[i].ToLower().Contains("invert:")|| args[i].ToLower().Contains("inversion:")){
-                    string str = args[i].ToLower().Replace("inversion:", "");
-                    str = args[i].ToLower().Replace("invert:", "");
-                    str = args[i].ToLower().Replace("i:", "");
-                    if (str == "t" || str == "true" || str == "y" || str == "yes"){
-                        return true;
+                if (args[i].ToLower().StartsWith("m:") || args[i].ToLower().StartsWith("mode:")){
+                    string str = args[i].ToLower().Replace("mode:", "");
+                    str = args[i].ToLower().Replace("m:", "");
+                    if (str == "n" || str == "normal"){
+                        return SniperData.HeightBrushModes.normal;
                     }
-                    if (str == "f" || str == "false" || str == "n" || str == "no"){
-                        return false;
+                    if (str == "i" || str == "invert" || str == "inverted"){
+                        return SniperData.HeightBrushModes.invert;
+                    }
+                    if (str == "f" || str == "flat" || str == "flatten"){
+                        return SniperData.HeightBrushModes.flatten;
                     }
                 }
             }
-            return SniperData.GetHeightBrushInversionMode();
+            return SniperData.GetActiveHeightBrushMode();
         }
 
         public SniperData.HeightBrushRotationMode ParseHeightBrushRotationMode(string[] args){
-            SniperData.HeightBrushRotationMode result;
             for (int i = 0; i < args.Length; i++){
                 if (args[i].ToLower().Contains("r:") || args[i].ToLower().Contains("rotate:") || args[i].ToLower().Contains("rotation:")){
                     string str = args[i].ToLower().Replace("rotation:", "");
